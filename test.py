@@ -30,24 +30,25 @@ passwd = driver.find_element_by_id("Password")
 passwd.send_keys(password + Keys.RETURN)
 #accounts = WebDriverWait(driver, 5).until(lambda d: d.find_elements_by_class_name("account"))
 accounts = WebDriverWait(driver, 5).until(lambda d: d.find_elements_by_class_name("account"))
+
+""" for account in accounts:
+    account.click()
+    download_btn = WebDriverWait(driver, 5).until(lambda d: d.find_element_by_id("export_trigger"))
+    download_btn.click()
+    
+    time.sleep(5) """
 #account.click()
-#download_btn = WebDriverWait(driver, 5).until(lambda d: d.find_element_by_id("export_trigger"))
-#print(download_btn.get_attribute())
 
 accounts[1].click()
 download_btn = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'export_trigger')))
 time.sleep(0.5)
 download_btn.click()
+drop = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "x-form-text")))
+drop.click()
 
-#dropboxGrandparent = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'ext_export_format_dropdown')))
-#dropbox = dropboxGrandparent.find_element_by_xpath("//div/input[2]")#"//div/input/@value='0'"
-dropbox = driver.find_elements_by_class("x-layer")
-print(dropbox)
-#csv = dropbox.find_element_by_xpath("//div/div[2]")
-#driver.execute_script('arguments[0].setAttribute("class", "x-combo-list x-combo-selected")', csv)
-#dropbox.send_keys("")   
-#driver.execute_script('arguments[0].setAttribute("value", "CSV (Comma-Separated Values)")', dropbox)
-#dropbox.send_keys(Keys.RETURN)
+dropbox_items = driver.find_elements(By.CLASS_NAME,"x-combo-list-item")
+dropbox_items[1].click()
+
 start = driver.find_element_by_id("Parameters_StartDate")
 driver.execute_script("arguments[0].setAttribute('value', '06/21/2020')", start)
 end = driver.find_element_by_id("Parameters_EndDate")
@@ -57,13 +58,6 @@ confirm_btn = driver.find_element_by_id("export_transactions_confirm_button")
 confirm_btn.click()
 time.sleep(5)
 
-""" for account in accounts:
-    account.click()
-    download_btn = WebDriverWait(driver, 5).until(lambda d: d.find_element_by_id("export_trigger"))
-    download_btn.click()
-    dropbox = WebDriverWait(driver, 5).until(lambda d: d.find_element_by_id("ext-gen12"))
-    driver.send_keys(Keys.ARROW_DOWN + Keys.ARROW_DOWN + Keys.RETURN)
-    time.sleep(5) """
-    
-
 driver.quit()    
+
+#process csv's
