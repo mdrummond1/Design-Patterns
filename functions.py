@@ -1,5 +1,7 @@
 #module for functions
+from calendar import monthlen
 import time
+
 def get_date_parameters():
     '''get_date_parameters()-> dict
         return a dictionary of strings representing dates.
@@ -10,7 +12,6 @@ def get_date_parameters():
         for use in the calling program
     '''
 
-
     today = time.localtime()
     start_day = str(today.tm_mday)
     start_month = str(today.tm_mon - 1)
@@ -19,6 +20,12 @@ def get_date_parameters():
     if start_month == 0:
         start_month = '12'
         start_yr = str(today.tm_year - 1)
+
+    last_day = monthlen(int(start_yr), int(start_month))
+
+    #take care of months that have different number of days
+    if int(start_day) > last_day:
+            start_day = str(last_day)
 
     end_day = start_day
     end_month = str(today.tm_mon)
@@ -33,3 +40,10 @@ def get_date_parameters():
     }
     return date
 
+
+def check_day(yr, mo, day):
+    last_day = monthlen(yr, mo)
+    if day > last_day:
+        return last_day
+    else:
+        return day
