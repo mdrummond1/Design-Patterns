@@ -24,8 +24,8 @@ def get_date_parameters():
     end_month = str(today.tm_mon)
     end_yr = start_yr
     
-    start_date = "\"arguments[0].setAttribute('value', '" + start_month + '/' + start_day + '/' + start_yr + "')\""
-    end_date = "\"arguments[0].setAttribute('value', '" + end_month + '/' + end_day + '/' + end_yr + "')\""
+    start_date = "arguments[0].setAttribute('value', '" + start_month + '/' + start_day + '/' + start_yr + "')"
+    end_date = "arguments[0].setAttribute('value', '" + end_month + '/' + end_day + '/' + end_yr + "')"
 
     date = {
         'start_date': start_date,
