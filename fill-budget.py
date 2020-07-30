@@ -10,11 +10,8 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import os
 import functions
 
-
-
-
-#add beautiful soup library
-#research requests to see if it's useful
+#TODO: research beautiful soup and requests to see if it's useful
+#TODO: possibly replace selenium if I can make the request directly
 
 #TODO: Use cryptography to save username/password
 #key = Fernet.generate_key()
