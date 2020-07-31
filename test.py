@@ -14,7 +14,7 @@ import getpass
 
 
 key = Fernet.generate_key()
-PATH = "C:\Program Files (x86)\chromedriver.exe"
+PATH = "browserDrivers\chromedriver.exe"
 #PATH = "/mnt/c/Program Files (x86)/chromedriver.exe"
 
 user = input("Enter UserName: ")
