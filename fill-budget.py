@@ -3,18 +3,20 @@ from functions import EC
 from functions import By
 from functions import time
 from functions import WebDriverWait
-from cryptography.fernet import Fernet
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import os
+from os import listdir
+from os import remove
+from os.path import isfile, join
+#from cryptography.fernet import Fernet
+#from cryptography.hazmat.backends import default_backend
+#from cryptography.hazmat.primitives import hashes
+#from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
 import functions
 
 #TODO: research beautiful soup and requests to see if it's useful
 #TODO: possibly replace selenium if I can make the request directly
 
 #TODO: Use cryptography to save username/password
-#key = Fernet.generate_key()
 
 url = "https://cuaonline.cuofamerica.com/MyAccountsV2"
 PATH = "./browserDrivers/chromedriver.exe"
@@ -61,9 +63,20 @@ for account in accounts:#download csv for each account
 driver.quit()    
 
 #TODO: process csv's
+#read-in files
+path_to_csvs = 'D:/UserLibraries/matta/Downloads/'
+csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
+row_to_remove = 0
 
-#path to downloads C:\Users\matta\Downloads
-#os.system("c:")
-#os.system("cd ")
-#os.system("rm C:/Users/matta/Downloads/*.csv")
-#os.system("del *.csv'")
+for file in csvs:
+    fl = open(path_to_csvs + file)
+    readers.extend(csv.reader(fl))
+    readers.remove(readers[row_to_remove])
+    row_to_remove = len(readers)
+
+for entry in readers:
+    print(entry[csv_fields['amt']])
+
+#TODO: what to do with transaction info
+    #separate into categories
+
