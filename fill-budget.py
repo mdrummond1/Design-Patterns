@@ -28,7 +28,7 @@ log_info = functions.get_log_info()#get bank login info
 driver = webdriver.Chrome(PATH)
 driver.get(url)
 
-"""#functions.login(log_info[0], log_info[1] , driver)#login
+#functions.login(log_info[0], log_info[1] , driver)#login
 
 i = 1#cause apparently I need a counter for the dropbox list
 
@@ -63,26 +63,23 @@ for account in accounts:#download csv for each account
     time.sleep(1)#give the sidebar time to close
     
 
-driver.quit()     """
+driver.quit()    
 
 #TODO: process csv's
-csvPath = 'C:/Users/matta/Downloads/ExportedTransactions'
+#read-in files
+path_to_csvs = 'D:/UserLibraries/matta/Downloads/'
+csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
+row_to_remove = 0
 
-csv1 = csv.reader(csvPath)
-'''csv2 = csv.reader(csvPath + ' (1)')
-csv3 = csv.reader(csvPath + ' (2)')
-csv4 = csv.reader(csvPath + ' (3)')
-csv5 = csv.reader(csvPath + ' (4)')
-csv6 = csv.reader(csvPath + ' (5)')
-csv7 = csv.reader(csvPath + ' (6)')'''
+for file in csvs:
+    fl = open(path_to_csvs + file)
+    readers.extend(csv.reader(fl))
+    readers.remove(readers[row_to_remove])
+    row_to_remove = len(readers)
 
-for row in csv1:
-    print(row)
+for entry in readers:
+    print(entry[csv_fields['amt']])
 
-
-
-#os.system("c:")
-#os.system("cd ")
-#os.system("rm C:/Users/matta/Downloads/*.csv")
-#os.system("del *.csv'")
+#TODO: what to do with transaction info
+    #separate into categories
 
