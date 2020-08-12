@@ -12,6 +12,7 @@ from os.path import isfile, join
 #from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 import functions
+import csv
 
 #TODO: research beautiful soup and requests to see if it's useful
 #TODO: possibly replace selenium if I can make the request directly
@@ -27,7 +28,7 @@ log_info = functions.get_log_info()#get bank login info
 driver = webdriver.Chrome(PATH)
 driver.get(url)
 
-functions.login(log_info[0], log_info[1] , driver)#login
+"""#functions.login(log_info[0], log_info[1] , driver)#login
 
 i = 1#cause apparently I need a counter for the dropbox list
 
@@ -38,7 +39,9 @@ date_params = functions.get_date_parameters()#generate dates
 
 for account in accounts:#download csv for each account
     account.click()
-
+    
+    print(account.get_attribute('data-account-identifier'))#maybe I can use this to get the date directly?
+    
     functions.wait_and_click('export_trigger', driver, 5)    
     
     drop = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "x-form-text")))
@@ -46,6 +49,7 @@ for account in accounts:#download csv for each account
     
     dropbox_items = WebDriverWait(driver, 5).until(lambda d: d.find_elements(By.CLASS_NAME,"x-combo-list-item"))
     dropbox_items[i].click()#select csv
+    i = i + 5 #increment counter for dropbox
 
     functions.input_dates(date_params, driver)#put date values into date selectors
         
@@ -58,25 +62,27 @@ for account in accounts:#download csv for each account
     
     time.sleep(1)#give the sidebar time to close
     
-    i = i + 5 #increment counter for dropbox
 
-driver.quit()    
+driver.quit()     """
 
 #TODO: process csv's
-#read-in files
-path_to_csvs = 'D:/UserLibraries/matta/Downloads/'
-csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
-row_to_remove = 0
+csvPath = 'C:/Users/matta/Downloads/ExportedTransactions'
 
-for file in csvs:
-    fl = open(path_to_csvs + file)
-    readers.extend(csv.reader(fl))
-    readers.remove(readers[row_to_remove])
-    row_to_remove = len(readers)
+csv1 = csv.reader(csvPath)
+'''csv2 = csv.reader(csvPath + ' (1)')
+csv3 = csv.reader(csvPath + ' (2)')
+csv4 = csv.reader(csvPath + ' (3)')
+csv5 = csv.reader(csvPath + ' (4)')
+csv6 = csv.reader(csvPath + ' (5)')
+csv7 = csv.reader(csvPath + ' (6)')'''
 
-for entry in readers:
-    print(entry[csv_fields['amt']])
+for row in csv1:
+    print(row)
 
-#TODO: what to do with transaction info
-    #separate into categories
+
+
+#os.system("c:")
+#os.system("cd ")
+#os.system("rm C:/Users/matta/Downloads/*.csv")
+#os.system("del *.csv'")
 
