@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+<<<<<<< HEAD
 import datetime
 import functions
 import calendar
@@ -9,6 +10,10 @@ import os
 import csv
 import transaction
 
+=======
+import time
+import functions
+>>>>>>> parent of ebfbbac... able to read csvs. need to categorize transactions.
 #######Testing requests and beautiful soup
 """ 
 headers = {
@@ -25,6 +30,7 @@ req = requests.get(url, headers)
 soup = BeautifulSoup(req.content, 'html.parser')
 print(soup.prettify) """
 
+<<<<<<< HEAD
 ########Testing reading in files
 """ path_to_csvs = 'D:/UserLibraries/matta/Downloads/'
 
@@ -71,3 +77,9 @@ for row in csv1:
 for i in trans:
     i.show()
 
+=======
+
+#######Getting current day
+params = functions.get_date_parameters()
+print(params)
+>>>>>>> parent of ebfbbac... able to read csvs. need to categorize transactions.
