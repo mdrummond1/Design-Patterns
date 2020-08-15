@@ -36,9 +36,24 @@ for file in csvs:
     row_to_remove = len(readers)
     fl.close()
 
-for file in csvs:
-    remove(path_to_csvs + file)
-print(readers)
-print(len(readers))
+mPaycheck = []
+mPayAmt = 0
+bPaycheck = []
+bPayAmt = 0
 
+for row in readers:
+    if "DIR DEP" and "VIA CHRISTI" in row[functions.csv_fields["desc"]]:
+        bPaycheck.extend([[row[functions.csv_fields["desc"]], row[functions.csv_fields["amt"]], row[functions.csv_fields["balance"]]]])
+        bPayAmt += float(row[functions.csv_fields["amt"]])      
+    elif "DIR DEP" and "STATE OF KANSAS" in row[functions.csv_fields["desc"]]:
+        mPaycheck.extend([row[functions.csv_fields["desc"]], row[functions.csv_fields["amt"]], row[functions.csv_fields["balance"]]])
+        mPayAmt += float(row[functions.csv_fields["amt"]])
+
+#print("Britt Pay: " + str(bPayAmt))
+#print("Matt Pay: " + str(mPayAmt))
+print("Britt Paychecks:")
+print(bPaycheck)
+print ("=======================")
+print("Matt Paychecks:")
+print(mPaycheck) 
 #csv = open(path_do_csvs + '/ExportedTransactions.csv')

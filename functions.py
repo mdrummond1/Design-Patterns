@@ -1,5 +1,5 @@
 #module for functions
-from calendar import monthlen
+from calendar import monthrange
 import time
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -27,7 +27,7 @@ def get_date_parameters():
         start_month = '12'
         start_yr = str(today.tm_year - 1)
 
-    last_day = monthlen(int(start_yr), int(start_month))
+    last_day = monthrange(int(start_yr), int(start_month))[1]
 
     #take care of months that have different number of days
     if int(start_day) > last_day:
@@ -83,12 +83,19 @@ def input_dates(date, driver):
     end = driver.find_element_by_id("Parameters_EndDate")
     driver.execute_script(date['end_date'], end)
 
-#use dictionary or tuple to tell function what we want to do
-'''switch(choice){
-
-    case wait_id:
-    case wait_class
-    case wait_id_click
-    case wait_class_click
+#use dictionary to access correct column of transaction
+csv_fields = {
+    'trans_id' : 0,
+    'post' : 1,
+    'effective' : 2,
+    'trans_type' : 3,
+    'amt' : 4,
+    'chk_num' : 5,
+    'ref_num' : 6,
+    'desc' : 7,
+    'trans_cat' : 8,
+    'type' : 9,
+    'balance' : 10,
+    'memo' : 11,
+    'ext_desc' : 12
 }
-'''
