@@ -71,14 +71,16 @@ csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'E
 row_to_remove = 0#get rid of each file heading
 readers = []
 
+#add in a list or something to keep track of the different accounts
 
+#open files and put in csv reader
 for file in csvs:
     fl = open(path_to_csvs + file)
     readers.extend(reader(fl))
     readers.remove(readers[row_to_remove])
     row_to_remove = len(readers)
     fl.close()
-    remove(path_to_csvs + file)
+    remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
 
 """ for file in csvs:
     remove(path_to_csvs + file) """
