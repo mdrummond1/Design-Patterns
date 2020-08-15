@@ -26,7 +26,7 @@ log_info = functions.get_log_info()#get bank login info
 driver = webdriver.Chrome(PATH)
 driver.get(url)
 
-#functions.login(log_info[0], log_info[1] , driver)#login
+functions.login(log_info[0], log_info[1] , driver)#login
 
 i = 1#cause apparently I need a counter for the dropbox list
 
