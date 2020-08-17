@@ -2,11 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import functions
-import csv
-from os import listdir
-from os import remove
-from os.path import isfile, join
-
 #######Testing requests and beautiful soup
 
 headers = {
