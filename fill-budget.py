@@ -59,11 +59,12 @@ for account in accounts:#download csv for each account
     
     i = i + 5 #increment counter for dropbox
 
-driver.quit()    
+driver.quit()  
 
 #TODO: process csv's
 #read-in files
 path_to_csvs = 'D:/UserLibraries/matta/Downloads/'
+
 
 #build list of transaction files
 csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
@@ -80,14 +81,14 @@ for file in csvs:
     readers.remove(readers[row_to_remove])
     row_to_remove = len(readers)
     fl.close()
-    remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
+    #remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
 
 """ for file in csvs:
     remove(path_to_csvs + file) """
 
 #print all the amounts
 for entry in readers:
-    print(entry[csv_fields['amt']])
+    print(entry[functions.csv_fields['amt']])
 
 #TODO: what to do with transaction info
     #separate into categories
