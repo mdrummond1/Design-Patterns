@@ -83,7 +83,7 @@ def input_dates(date, driver):
     end = driver.find_element_by_id("Parameters_EndDate")
     driver.execute_script(date['end_date'], end)
 
-#use dictionary to access correct column of transaction
+#Dictionary to access correct column of transaction
 csv_fields = {
     'trans_id' : 0,
     'post' : 1,
@@ -99,3 +99,16 @@ csv_fields = {
     'memo' : 11,
     'ext_desc' : 12
 }
+
+#Dictionary to check descriptions and categorize
+#TODO: add categories for accounts other than checking 0400
+categories = {
+    'income' : ['VIA CHRISTI', 'STATE OF KANSAS', 'APY Earned'],
+    'credit cards' : ['CAPITAL ONE', 'PAYMENT FOR AMZ', 'CHASE CREDIT CRD'],
+    'car insurance' : 'PROG N WESTERN',
+    'renters insurance' : 'STATE FARM',
+    'utilities' : ['COX', 'Evergy', 'KANSAS GAS', 'ATT', 'WASTELINK'],
+    'loans' : 'GREAT LAKES',
+
+}
+#TODO: add categories that are set in CUA website
