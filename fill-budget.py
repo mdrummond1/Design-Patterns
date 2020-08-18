@@ -3,15 +3,6 @@ from functions import EC
 from functions import By
 from functions import time
 from functions import WebDriverWait
-<<<<<<< HEAD
-from cryptography.fernet import Fernet
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-import os
-import functions
-import csv
-=======
 from csv import reader
 from os import listdir, remove
 from os.path import isfile, join
@@ -20,7 +11,6 @@ import functions
 #from cryptography.hazmat.backends import default_backend
 #from cryptography.hazmat.primitives import hashes
 #from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
->>>>>>> 0b6de6010bd2a52cc4e812acd01b03e1702e381b
 
 #TODO: research beautiful soup and requests to see if it's useful
 #TODO: possibly replace selenium if I can make the request directly
@@ -105,8 +95,3 @@ for entry in readers:
 #TODO: what to do with transaction info
     #separate into categories
 
-#path to downloads C:\Users\matta\Downloads
-#os.system("c:")
-#os.system("cd ")
-#os.system("rm C:/Users/matta/Downloads/*.csv")
-#os.system("del *.csv'")
