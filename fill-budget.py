@@ -74,7 +74,8 @@ driver.quit()
 
 #TODO: process csv's
 #read-in files
-path_to_csvs = 'D:/UserLibraries/matta/Downloads/'
+path_to_csvs = r'C:\Users\kaleb\Downloads' #'D:/UserLibraries/matta/Downloads/'
+
 
 
 #build list of transaction files
