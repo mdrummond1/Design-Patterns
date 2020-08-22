@@ -1,6 +1,5 @@
-calendar
 selenium
-getpass
 bs4
 requests
-csv
+time
+cryptography

@@ -19,7 +19,6 @@ import functions
 #key = Fernet.generate_key()
 
 
-''' Haha ha '''
 url = "https://cuaonline.cuofamerica.com/MyAccountsV2"
 PATH = "./browserDrivers/chromedriver.exe"
 
