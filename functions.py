@@ -108,7 +108,7 @@ categories = {
     'car insurance' : 'PROG N WESTERN',
     'renters insurance' : 'STATE FARM',
     'utilities' : ['COX', 'Evergy', 'KANSAS GAS', 'ATT', 'WASTELINK'],
-    'loans' : 'GREAT LAKES',
+    'loans' : 'GREAT LAKES' 
 
 }
 #TODO: add categories that are set in CUA website

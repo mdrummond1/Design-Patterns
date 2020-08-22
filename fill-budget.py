@@ -61,8 +61,8 @@ for account in accounts:#download csv for each account
     
     time.sleep(1)#give the sidebar time to close
     
-
 driver.quit()  
+
 
 #TODO: process csv's
 #read-in files
@@ -86,12 +86,10 @@ for file in csvs:
     fl.close()
     #remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
 
-""" for file in csvs:
-    remove(path_to_csvs + file) """
 
 #print all the amounts
 for entry in readers:
-    print(entry[functions.csv_fields['amt']])
+    print(entry[functions.csv_fields['desc']])
 
 #TODO: what to do with transaction info
     #separate into categories
