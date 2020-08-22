@@ -3,7 +3,7 @@ from functions import EC
 from functions import By
 from functions import time
 from functions import WebDriverWait
-from functions import common
+from selenium import common
 from csv import reader
 from os import listdir, remove
 from os.path import isfile, join
@@ -39,35 +39,36 @@ accounts = WebDriverWait(driver, 5).until(lambda d: d.find_elements_by_class_nam
 date_params = functions.get_date_parameters()#generate dates
 
 for account in accounts:#download csv for each account
-    account.click()
-    
-    print(account.get_attribute('data-account-identifier'))#maybe I can use this to get the date directly?
     try:
+        account.click()
+    
+        #print(account.get_attribute('data-account-identifier'))#maybe I can use this to get the date directly?
+    
         functions.wait_and_click('export_trigger', driver, 5)    
 
+        drop = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "x-form-text")))
+        drop.click()#open dropbox
+    
+        dropbox_items = WebDriverWait(driver, 5).until(lambda d: d.find_elements(By.CLASS_NAME,"x-combo-list-item"))
+        dropbox_items[i].click()#select csv
+        i = i + 5 #increment counter for dropbox
+
+        functions.input_dates(date_params, driver)#put date values into date selectors
+        
+        #click confirm
+        confirm_btn = functions.wait_and_click("export_transactions_confirm_button", driver, 5)
+    
+        time.sleep(2)#give the file time to download
+
+        confirm_btn.send_keys(functions.Keys.ESCAPE)#close side panel to get ready for next account
+    
+        time.sleep(1)#give the sidebar time to close
     
     except common.exceptions.TimeoutException:
         print("you can't do that")
 
-    
-    drop = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "x-form-text")))
-    drop.click()#open dropbox
-    
-    dropbox_items = WebDriverWait(driver, 5).until(lambda d: d.find_elements(By.CLASS_NAME,"x-combo-list-item"))
-    dropbox_items[i].click()#select csv
-    i = i + 5 #increment counter for dropbox
 
-    functions.input_dates(date_params, driver)#put date values into date selectors
-        
-    #click confirm
-    confirm_btn = functions.wait_and_click("export_transactions_confirm_button", driver, 5)
-    
-    time.sleep(2)#give the file time to download
 
-    confirm_btn.send_keys(functions.Keys.ESCAPE)#close side panel to get ready for next account
-    
-    time.sleep(1)#give the sidebar time to close
-    
 driver.quit()  
 
 
