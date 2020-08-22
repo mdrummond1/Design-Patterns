@@ -2,8 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import functions
-#######Testing requests and beautiful soup
 
+#===============Testing requests and beautiful soup==================
+"""
 headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Controw-Allow-Methods':'GET',
@@ -21,8 +22,11 @@ print(soup.prettify)
 
 fl = open("test.html", 'w')
 fl.write(str(soup))
+"""
+#=====================================================================
 
-"""path_to_csvs = 'D:/UserLibraries/matta/Downloads/'
+#==============Testing csv reading====================================
+path_to_csvs = 'D:/UserLibraries/matta/Downloads/'
 
 csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
 readers = []
@@ -40,6 +44,7 @@ mPayAmt = 0
 bPaycheck = []
 bPayAmt = 0
 
+#test how to process the csv data
 for row in readers:
     if "DIR DEP" and "VIA CHRISTI" in row[functions.csv_fields["desc"]]:
         bPaycheck.extend([[row[functions.csv_fields["desc"]], row[functions.csv_fields["amt"]], row[functions.csv_fields["balance"]]]])
@@ -56,4 +61,5 @@ print ("=======================")
 print("Matt Paychecks:")
 print(mPaycheck) 
 #csv = open(path_do_csvs + '/ExportedTransactions.csv')
-"""
+
+#========================================================================

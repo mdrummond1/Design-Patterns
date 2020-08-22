@@ -66,7 +66,8 @@ for account in accounts:#download csv for each account
     
     except common.exceptions.TimeoutException:
         print("you can't do that")
-
+        break
+        
 
 
 driver.quit()  
@@ -94,7 +95,6 @@ for file in csvs:
     row_to_remove = len(readers)
     fl.close()
     #remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
-
 
 #print all the amounts
 for entry in readers:

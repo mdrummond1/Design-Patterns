@@ -106,9 +106,13 @@ categories = {
     'income' : ['VIA CHRISTI', 'STATE OF KANSAS', 'APY Earned'],
     'credit cards' : ['CAPITAL ONE', 'PAYMENT FOR AMZ', 'CHASE CREDIT CRD'],
     'car insurance' : 'PROG N WESTERN',
+    'fuel' : ['QuikTrip'],
     'renters insurance' : 'STATE FARM',
     'utilities' : ['COX', 'Evergy', 'KANSAS GAS', 'ATT', 'WASTELINK'],
-    'loans' : 'GREAT LAKES' 
+    'loans' : 'GREAT LAKES',
+    'gym' : 'YMCA',
+    'groceries' : ['Walmart', 'Aldi', 'Dillons'],
+    'dining' : ['Spangles', 'Braum\'s', 'Fazoli\'s']
 
 }
 #TODO: add categories that are set in CUA website
