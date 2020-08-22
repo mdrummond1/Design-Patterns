@@ -13,7 +13,7 @@ import functions
 #from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 #TODO: research beautiful soup and requests to see if it's useful
-#TODO: possibly replace selenium if I can make the request directly
+#TODO: possibly replace selenium if I can make the request directly, or use an api like plaid
 
 #TODO: Use cryptography to save username/password
 #key = Fernet.generate_key()

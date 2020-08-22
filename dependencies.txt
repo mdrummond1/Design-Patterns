@@ -1,5 +1,7 @@
 selenium
 bs4
 requests
-time
+pandas
+numpy
+matplotlib
 cryptography
