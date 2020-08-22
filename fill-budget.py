@@ -18,6 +18,8 @@ import functions
 #TODO: Use cryptography to save username/password
 #key = Fernet.generate_key()
 
+
+''' Haha ha '''
 url = "https://cuaonline.cuofamerica.com/MyAccountsV2"
 PATH = "./browserDrivers/chromedriver.exe"
 
