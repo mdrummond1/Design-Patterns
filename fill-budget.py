@@ -3,6 +3,7 @@ from functions import EC
 from functions import By
 from functions import time
 from functions import WebDriverWait
+from functions import common
 from csv import reader
 from os import listdir, remove
 from os.path import isfile, join
@@ -41,8 +42,13 @@ for account in accounts:#download csv for each account
     account.click()
     
     print(account.get_attribute('data-account-identifier'))#maybe I can use this to get the date directly?
+    try:
+        functions.wait_and_click('export_trigger', driver, 5)    
+
     
-    functions.wait_and_click('export_trigger', driver, 5)    
+    except common.exceptions.TimeoutException:
+        print("you can't do that")
+
     
     drop = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "x-form-text")))
     drop.click()#open dropbox
