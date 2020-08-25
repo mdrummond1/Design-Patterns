@@ -64,9 +64,9 @@ for account in accounts:#download csv for each account
     
         time.sleep(1)#give the sidebar time to close
     
-    except common.exceptions.TimeoutException:
+    except Exception  as  e:
         print("you can't do that")
-        break
+        print(e)
         
 
 
@@ -75,8 +75,7 @@ driver.quit()
 
 #TODO: process csv's
 #read-in files
-path_to_csvs = r'C:\Users\kaleb\Downloads' #'D:/UserLibraries/matta/Downloads/'
-
+path_to_csvs = functions.get_downloads()
 
 
 #build list of transaction files
