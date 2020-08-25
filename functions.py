@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from winreg import QueryValueEx, OpenKey, HKEY_CURRENT_USER
 import getpass
 
 def get_date_parameters():
@@ -83,6 +84,13 @@ def input_dates(date, driver):
     end = driver.find_element_by_id("Parameters_EndDate")
     driver.execute_script(date['end_date'], end)
 
+def get_downloads():
+    '''() -> string
+    returns the location of the Downloads folder as a string
+    '''
+    with OpenKey(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
+        return QueryValueEx(key, '{374DE290-123F-4565-9164-39C4925E467B}')[0] + '\\'
+
 #Dictionary to access correct column of transaction
 csv_fields = {
     'trans_id' : 0,
@@ -105,12 +113,12 @@ csv_fields = {
 categories = {
     'income' : ['VIA CHRISTI', 'STATE OF KANSAS', 'APY Earned'],
     'credit cards' : ['CAPITAL ONE', 'PAYMENT FOR AMZ', 'CHASE CREDIT CRD'],
-    'car insurance' : 'PROG N WESTERN',
+    'car insurance' : ['PROG N WESTERN'],
     'fuel' : ['QuikTrip'],
-    'renters insurance' : 'STATE FARM',
+    'renters insurance' : ['STATE FARM'],
     'utilities' : ['COX', 'Evergy', 'KANSAS GAS', 'ATT', 'WASTELINK'],
-    'loans' : 'GREAT LAKES',
-    'gym' : 'YMCA',
+    'loans' : ['GREAT LAKES'],
+    'gym' : ['YMCA'],
     'groceries' : ['Walmart', 'Aldi', 'Dillons'],
     'dining' : ['Spangles', 'Braum\'s', 'Fazoli\'s']
 
