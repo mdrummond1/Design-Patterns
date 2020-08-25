@@ -2,7 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import functions
-
+import csv
+from winreg import QueryValueEx, OpenKey, HKEY_CURRENT_USER
+from os import listdir, remove
+from os.path import isfile, join
 #===============Testing requests and beautiful soup==================
 """
 headers = {
@@ -26,7 +29,8 @@ fl.write(str(soup))
 #=====================================================================
 
 #==============Testing csv reading====================================
-path_to_csvs = 'D:/UserLibraries/matta/Downloads/'
+path_to_csvs = functions.get_downloads()
+
 
 csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
 readers = []
@@ -39,27 +43,32 @@ for file in csvs:
     row_to_remove = len(readers)
     fl.close()
 
+print(readers)
 mPaycheck = []
 mPayAmt = 0
 bPaycheck = []
 bPayAmt = 0
 
 #test how to process the csv data
+ 
+#This is how we can clean the descriptions. Hoopefully we can eventually change it so we don't need 3 loops
 for row in readers:
-    if "DIR DEP" and "VIA CHRISTI" in row[functions.csv_fields["desc"]]:
-        bPaycheck.extend([[row[functions.csv_fields["desc"]], row[functions.csv_fields["amt"]], row[functions.csv_fields["balance"]]]])
-        bPayAmt += float(row[functions.csv_fields["amt"]])      
-    elif "DIR DEP" and "STATE OF KANSAS" in row[functions.csv_fields["desc"]]:
-        mPaycheck.extend([row[functions.csv_fields["desc"]], row[functions.csv_fields["amt"]], row[functions.csv_fields["balance"]]])
-        mPayAmt += float(row[functions.csv_fields["amt"]])
+    for cat in functions.categories.values():
+        for sub in cat:
+            if sub.lower() in row[functions.csv_fields['desc']].lower():
+                row[functions.csv_fields['desc']] = sub
+                print(sub)
+                break
+     
+print(readers)
+""" 
 
-#print("Britt Pay: " + str(bPayAmt))
-#print("Matt Pay: " + str(mPayAmt))
+print("Britt Pay: " + str(bPayAmt))
+print("Matt Pay: " + str(mPayAmt))
 print("Britt Paychecks:")
 print(bPaycheck)
 print ("=======================")
 print("Matt Paychecks:")
-print(mPaycheck) 
-#csv = open(path_do_csvs + '/ExportedTransactions.csv')
+print(mPaycheck)  """
 
 #========================================================================
