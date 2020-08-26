@@ -7,6 +7,7 @@ from selenium import common
 from csv import reader
 from os import listdir, remove
 from os.path import isfile, join
+from transaction import Transaction
 import functions
 #from cryptography.fernet import Fernet
 #from cryptography.hazmat.backends import default_backend
@@ -69,7 +70,6 @@ for account in accounts:#download csv for each account
         print(e)
         
 
-
 driver.quit()  
 
 
@@ -95,10 +95,26 @@ for file in csvs:
     fl.close()
     #remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
 
-#print all the amounts
-for entry in readers:
-    print(entry[functions.csv_fields['desc']])
+#clean the csv rows
+t = []
+#test how to process the csv data
+ 
+#This is how we can clean the descriptions. Hopefully we can eventually change it so we don't need 3 loops
+for row in readers:
+    for cat in functions.categories.values():
+        for sub in cat:
+            if sub.lower() in row[functions.csv_fields['desc']].lower():
+                row[functions.csv_fields['desc']] = sub
+                t.append(Transaction(row))
+                break
+
+for trans in t:
+    trans.display()
+#readers = clean_rows()
 
 #TODO: what to do with transaction info
     #separate into categories
 
+#print all the amounts
+for entry in readers:
+    print(entry[functions.csv_fields['desc']])
