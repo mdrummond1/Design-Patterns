@@ -1,14 +1,9 @@
-from functions import webdriver
-from functions import EC
-from functions import By
-from functions import time
-from functions import WebDriverWait
+from functions import *
 from selenium import common
 from csv import reader
 from os import listdir, remove
 from os.path import isfile, join
 from transaction import Transaction
-import functions
 #from cryptography.fernet import Fernet
 #from cryptography.hazmat.backends import default_backend
 #from cryptography.hazmat.primitives import hashes
@@ -16,36 +11,36 @@ import functions
 
 #TODO: research beautiful soup and requests to see if it's useful
 #TODO: possibly replace selenium if I can make the request directly, or use an api like plaid
-
 #TODO: Use cryptography to save username/password
-#key = Fernet.generate_key()
 
 
 url = "https://cuaonline.cuofamerica.com/MyAccountsV2"
 PATH = "./browserDrivers/chromedriver.exe"
 
 
-log_info = functions.get_log_info()#get bank login info
+log_info = get_log_info()#get bank login info
 
 driver = webdriver.Chrome(PATH)
 driver.get(url)
 
-functions.login(log_info[0], log_info[1] , driver)#login
-
+login(log_info[0], log_info[1] , driver)#login
+print("Logging in ...")
 i = 1#cause apparently I need a counter for the dropbox list
 
 #get list of accounts
 accounts = WebDriverWait(driver, 5).until(lambda d: d.find_elements_by_class_name("account"))
 
-date_params = functions.get_date_parameters()#generate dates
+date_params = get_date_parameters()#generate dates
+print("Setting dates...")
 
+print("collecting accounts")
 for account in accounts:#download csv for each account
     try:
         account.click()
     
         #print(account.get_attribute('data-account-identifier'))#maybe I can use this to get the date directly?
     
-        functions.wait_and_click('export_trigger', driver, 5)    
+        wait_and_click('export_trigger', driver, 5)    
 
         drop = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "x-form-text")))
         drop.click()#open dropbox
@@ -54,14 +49,14 @@ for account in accounts:#download csv for each account
         dropbox_items[i].click()#select csv
         i = i + 5 #increment counter for dropbox
 
-        functions.input_dates(date_params, driver)#put date values into date selectors
+        input_dates(date_params, driver)#put date values into date selectors
         
         #click confirm
-        confirm_btn = functions.wait_and_click("export_transactions_confirm_button", driver, 5)
+        confirm_btn = wait_and_click("export_transactions_confirm_button", driver, 5)
     
         time.sleep(2)#give the file time to download
 
-        confirm_btn.send_keys(functions.Keys.ESCAPE)#close side panel to get ready for next account
+        confirm_btn.send_keys(Keys.ESCAPE)#close side panel to get ready for next account
     
         time.sleep(1)#give the sidebar time to close
     
@@ -75,7 +70,7 @@ driver.quit()
 
 #TODO: process csv's
 #read-in files
-path_to_csvs = functions.get_downloads()
+path_to_csvs = get_downloads()
 
 
 #build list of transaction files
@@ -95,26 +90,12 @@ for file in csvs:
     fl.close()
     #remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
 
-#clean the csv rows
-t = []
-#test how to process the csv data
  
-#This is how we can clean the descriptions. Hopefully we can eventually change it so we don't need 3 loops
-for row in readers:
-    for cat in functions.categories.values():
-        for sub in cat:
-            if sub.lower() in row[functions.csv_fields['desc']].lower():
-                row[functions.csv_fields['desc']] = sub
-                t.append(Transaction(row))
-                break
+#clean the csv rows
+t = clean_rows(readers)
 
 for trans in t:
     trans.display()
-#readers = clean_rows()
 
 #TODO: what to do with transaction info
     #separate into categories
-
-#print all the amounts
-for entry in readers:
-    print(entry[functions.csv_fields['desc']])
