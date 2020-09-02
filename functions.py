@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from winreg import QueryValueEx, OpenKey, HKEY_CURRENT_USER
 import getpass
+import transaction
 
 def get_date_parameters():
     '''get_date_parameters()-> dict
@@ -91,6 +92,36 @@ def get_downloads():
     with OpenKey(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
         return QueryValueEx(key, '{374DE290-123F-4565-9164-39C4925E467B}')[0] + '\\'
 
+def clean_rows(readers):
+    '''(readers) -> [Transactions]
+    Takes in a readers object (list of lists), and returns an array of Transactions
+    Runs through 3 for loops
+    '''
+    #TODO: Optimize this function to not use 3 for loopst
+    t = []
+    for row in readers:
+        for cat in categories.values():
+            for sub in cat:
+                if sub.lower() in row[csv_fields['desc']].lower():#clean the descriptions
+                    row[csv_fields['desc']] = sub
+                    break
+        t.append(transaction.Transaction(row))
+
+    return t
+    
+def get_account_order():
+    '''() -> void
+    takes no parameters.
+    opens a file containing the order of the account transactions
+    and returns that order in a list.
+    Now we can track where the transactions happened.'''
+    f = open("./order.txt", 'r')
+    a = f.readlines()
+    for i in range(len(a)):
+        a[i] = a[i][:-1]#strip out the \n at the end
+    f.close()
+    return a
+
 #Dictionary to access correct column of transaction
 csv_fields = {
     'trans_id' : 0,
@@ -123,4 +154,4 @@ categories = {
     'dining' : ['Spangles', 'Braum\'s', 'Fazoli\'s']
 
 }
-#TODO: add categories that are set in CUA website
+
