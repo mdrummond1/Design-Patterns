@@ -1,4 +1,4 @@
-from functions import csv_fields
+import functions
 
 class Transaction:
     def __init__(self, transID, post, effDate, transType, amt, check, ref, desc, cat, typ, bal, memo, ext):
@@ -17,21 +17,21 @@ class Transaction:
         self.ext = ext
     
     def __init__(self, reader):
-        self.transID = reader[csv_fields['trans_id']]
-        self.post = reader[csv_fields['post']]
-        self.effDate = reader[csv_fields['effective']]
-        self.transType = reader[csv_fields['trans_type']]
-        self.amt = reader[csv_fields['amt']]
-        self.check = reader[csv_fields['chk_num']]
-        self.ref = reader[csv_fields['ref_num']]
-        self.desc = reader[csv_fields['desc']]
-        self.cat = reader[csv_fields['trans_cat']]
-        self.type = reader[csv_fields['type']]
-        self.bal = reader[csv_fields['balance']]
-        self.memo = reader[csv_fields['memo']]
-        self.ext = reader[csv_fields['ext_desc']]
+        self.transID = reader[functions.csv_fields['trans_id']]
+        self.post = reader[functions.csv_fields['post']]
+        self.effDate = reader[functions.csv_fields['effective']]
+        self.transType = reader[functions.csv_fields['trans_type']]
+        self.amt = reader[functions.csv_fields['amt']]
+        self.check = reader[functions.csv_fields['chk_num']]
+        self.ref = reader[functions.csv_fields['ref_num']]
+        self.desc = reader[functions.csv_fields['desc']]
+        self.cat = reader[functions.csv_fields['trans_cat']]
+        self.type = reader[functions.csv_fields['type']]
+        self.bal = reader[functions.csv_fields['balance']]
+        self.memo = reader[functions.csv_fields['memo']]
+        self.ext = reader[functions.csv_fields['ext_desc']]
 
-    def getAmt(self):
+    def get_amt(self):
         return self.amt
 
     def display(self):
