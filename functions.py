@@ -118,7 +118,8 @@ def get_account_order():
     f = open("./order.txt", 'r')
     a = f.readlines()
     for i in range(len(a)):
-        a[i] = a[i][:-1]#strip out the \n at the end
+        if a[i][-1] == '\n':
+            a[i] = a[i][:-1]#strip out the \n at the end
     f.close()
     return a
 
