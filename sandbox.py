@@ -38,39 +38,37 @@ path_to_csvs = functions.get_downloads()
 
 csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
 readers = []
-row_to_remove = 0
+row_to_remove = [0]
 
 
 for file in csvs:
     fl = open(path_to_csvs + file)
     readers.extend(csv.reader(fl))
-    readers.remove(readers[row_to_remove])
-    row_to_remove = len(readers)
+    #readers.remove(readers[row_to_remove])
+    row_to_remove.append(len(readers))
     fl.close()
 
+row_to_remove.remove(row_to_remove[-1])
 
-#print(readers)
+for r in row_to_remove:
+    readers.remove(readers[r])
+
+
+print(readers)
+
 mPaycheck = []
 mPayAmt = 0
 bPaycheck = []
-
 bPayAmt = 0
 
-order = functions.get_account_order()
+#trying to get the list of transactions into a dictionary. Or we build an account object to track the balance over time and hold a list of transactions
+order = {f:readers[t] for f in get_account_order() for t in range(row_to_remove[1]-1)}
 print(str(order))
+
+
 
 t = clean_rows(readers)
 #test how to process the csv data
-
-#This is how we can clean the descriptions. Hopefully we can eventually change it so we don't need 3 loops
-""" for row in readers:
-    for cat in functions.categories.values():
-        for sub in cat:
-            if sub.lower() in row[functions.csv_fields['desc']].lower():
-                row[functions.csv_fields['desc']] = sub
-                t.append(Transaction(row))
-                break
- """    
 
 for trans in t:
     trans.display()
