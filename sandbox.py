@@ -38,43 +38,44 @@ path_to_csvs = functions.get_downloads()
 
 csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
 readers = []
-row_to_remove = [0]
-
+row_to_remove = 0
+#row_to_remove = [0]
 
 for file in csvs:
     fl = open(path_to_csvs + file)
     readers.extend(csv.reader(fl))
-    #readers.remove(readers[row_to_remove])
-    row_to_remove.append(len(readers))
+    readers.remove(readers[row_to_remove])
+    #row_to_remove.append(len(readers))
+    row_to_remove = len(readers)
     fl.close()
 
-row_to_remove.remove(row_to_remove[-1])
+#row_to_remove.remove(row_to_remove[-1])
 
-for r in row_to_remove:
+""" for r in row_to_remove:
+    print(readers[r])
     readers.remove(readers[r])
+ """
 
-
-print(readers)
 
 mPaycheck = []
 mPayAmt = 0
 bPaycheck = []
 bPayAmt = 0
-
+ext = ".fin"
 #trying to get the list of transactions into a dictionary. Or we build an account object to track the balance over time and hold a list of transactions
-order = {f:readers[t] for f in get_account_order() for t in range(row_to_remove[1]-1)}
-print(str(order))
-
-
+""" order = {f:readers[t] for f in get_account_order(ext) for t in range(row_to_remove[1]-1)}
+print(order) """
 
 t = clean_rows(readers)
-#test how to process the csv data
+cats = {k : 0 for k in categories.keys()}
 
 for trans in t:
-    trans.display()
+    a = get_amount_info(trans)
+    print(trans.cat)
+    cats[a[0]] += a[1]
 
-""" 
-
+print(cats)
+"""
 print("Britt Pay: " + str(bPayAmt))
 print("Matt Pay: " + str(mPayAmt))
 print("Britt Paychecks:")

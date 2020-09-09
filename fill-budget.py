@@ -16,7 +16,7 @@ from transaction import Transaction
 
 url = "https://cuaonline.cuofamerica.com/MyAccountsV2"
 PATH = "./browserDrivers/chromedriver.exe"
-
+ext = '.fin'
 
 log_info = get_log_info()#get bank login info
 
@@ -33,7 +33,7 @@ accounts = WebDriverWait(driver, 5).until(lambda d: d.find_elements_by_class_nam
 date_params = get_date_parameters()#generate dates
 print("Setting dates...")
 
-print("collecting accounts")
+print("Collecting accounts...")
 for account in accounts:#download csv for each account
     try:
         account.click()
@@ -96,6 +96,7 @@ t = clean_rows(readers)
 
 for trans in t:
     trans.display()
+
 
 #TODO: what to do with transaction info
     #separate into categories
