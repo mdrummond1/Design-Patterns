@@ -109,17 +109,17 @@ def clean_rows(readers):
 
     return t
     
-def get_account_order():
+def get_account_order(ext):
     '''() -> void
     takes no parameters.
     opens a file containing the order of the account transactions
     and returns that order in a list.
     Now we can track where the transactions happened.'''
-    f = open("./order.txt", 'r')
+    f = open("./order" + ext, 'r')
     a = f.readlines()
     for i in range(len(a)):
-        if a[i][-1] == '\n':
-            a[i] = a[i][:-1]#strip out the \n at the end
+        if a[i][-1] == '\n':#strip out the \n at the end
+            a[i] = a[i][:-1]
     f.close()
     return a
 
@@ -140,19 +140,66 @@ csv_fields = {
     'ext_desc' : 12
 }
 
+def get_amount_info(t):
+    '''(t) -> [str, int]
+    Accepts a Transaction as input and returns a list 
+    showing which category the transaction belongs in
+    and the amount of the transaction'''
+
+    
+
+    #check all categories
+    for key in categories:
+        if t.desc in categories[key]:
+            arr = [key]
+            t.cat = key
+            break
+        else:
+            arr = ['uncategorized']
+            t.cat = 'uncategorized'
+    
+
+    """ if t.desc in categories['income']:
+        arr.append('income')
+    elif t.desc in categories['mortgage or rent']:
+        arr.append('mortgage or rent')
+    elif t.desc in categories['phone']:
+        arr.append('phone')
+    elif t.desc in categories['credit cards']:
+        arr.append('credit cards')
+    elif t.desc in categories['transportation']:
+        arr.append('transportation')
+    elif t.desc in categories['renters insurance']:
+        arr.append('renters insurance')
+    elif t.desc in categories['utilities']:
+        arr.append('utilities')
+    elif t.desc in categories['loans']:
+        arr.append('loans')
+    elif t.desc in categories['gym']:
+        arr.append('gym')
+    elif t.desc in categories['groceries']:
+        arr.append('groceries')
+    elif t.desc in categories['dining out']:
+        arr.append('dining out')
+    else:
+        arr.append('uncategorized') """
+
+    arr.append(float(t.amt))
+    return arr
+
 #Dictionary to check descriptions and categorize
-#TODO: add categories for accounts other than checking 0400
 categories = {
     'income' : ['VIA CHRISTI', 'STATE OF KANSAS', 'APY Earned'],
+    'rent' : ['CHECK'],
+    'phone' : ['ATT'],
     'credit cards' : ['CAPITAL ONE', 'PAYMENT FOR AMZ', 'CHASE CREDIT CRD'],
-    'car insurance' : ['PROG N WESTERN'],
-    'fuel' : ['QuikTrip'],
+    'transportation' : ['PROG N WESTERN', 'QuikTrip'],
     'renters insurance' : ['STATE FARM'],
-    'utilities' : ['COX', 'Evergy', 'KANSAS GAS', 'ATT', 'WASTELINK'],
+    'utilities' : ['COX', 'Evergy', 'KANSAS GAS', 'ATT', 'WASTELINK', 'CITY OF WICHITA'],
     'loans' : ['GREAT LAKES'],
     'gym' : ['YMCA'],
     'groceries' : ['Walmart', 'Aldi', 'Dillons'],
-    'dining' : ['Spangles', 'Braum\'s', 'Fazoli\'s']
-
+    'dining out' : ['Spangles', 'Braum\'s', 'Fazoli\'s'],
+    'uncategorized' : []
 }
 
