@@ -107,6 +107,9 @@ def clean_rows(readers):
                     break
         t.append(transaction.Transaction(row))
 
+    for trans in t:
+        if trans.type == 'Credit' and trans.amt > 0:
+            trans.amt = -trans.amt
     return t
     
 def get_account_order(ext):
@@ -140,53 +143,28 @@ csv_fields = {
     'ext_desc' : 12
 }
 
-def get_amount_info(t):
+def filter_transaction(t):
     '''(t) -> [str, int]
     Accepts a Transaction as input and returns a list 
     showing which category the transaction belongs in
     and the amount of the transaction'''
 
-    
-
-    #check all categories
-    for key in categories:
+    for key in categories:#search categories for given transaction description
         if t.desc in categories[key]:
             arr = [key]
             t.cat = key
-            break
+            break#leave loop if we find it
         else:
             arr = ['uncategorized']
             t.cat = 'uncategorized'
     
-
-    """ if t.desc in categories['income']:
-        arr.append('income')
-    elif t.desc in categories['mortgage or rent']:
-        arr.append('mortgage or rent')
-    elif t.desc in categories['phone']:
-        arr.append('phone')
-    elif t.desc in categories['credit cards']:
-        arr.append('credit cards')
-    elif t.desc in categories['transportation']:
-        arr.append('transportation')
-    elif t.desc in categories['renters insurance']:
-        arr.append('renters insurance')
-    elif t.desc in categories['utilities']:
-        arr.append('utilities')
-    elif t.desc in categories['loans']:
-        arr.append('loans')
-    elif t.desc in categories['gym']:
-        arr.append('gym')
-    elif t.desc in categories['groceries']:
-        arr.append('groceries')
-    elif t.desc in categories['dining out']:
-        arr.append('dining out')
-    else:
-        arr.append('uncategorized') """
-
     arr.append(float(t.amt))
     return arr
 
+def show_category(s, t):
+    for trans in t:
+        if trans.cat == s:
+            trans.display()
 #Dictionary to check descriptions and categorize
 categories = {
     'income' : ['VIA CHRISTI', 'STATE OF KANSAS', 'APY Earned'],
@@ -198,8 +176,10 @@ categories = {
     'utilities' : ['COX', 'Evergy', 'KANSAS GAS', 'ATT', 'WASTELINK', 'CITY OF WICHITA'],
     'loans' : ['GREAT LAKES'],
     'gym' : ['YMCA'],
-    'groceries' : ['Walmart', 'Aldi', 'Dillons'],
-    'dining out' : ['Spangles', 'Braum\'s', 'Fazoli\'s'],
+    'groceries' : ['Walmart', 'Aldi', 'Dillons', 'Dollar Tree'],
+    'dining out' : ['Spangles', 'Braum\'s', 'Fazoli\'s', 'Saigon', 'Starbucks', 'Wichita Coffee'],
+    'pets' : ['Sitstay'],
+    'healthcare' : ['grene vision'],
     'uncategorized' : []
 }
 
