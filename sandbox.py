@@ -66,15 +66,15 @@ ext = ".fin"
 """ order = {f:readers[t] for f in get_account_order(ext) for t in range(row_to_remove[1]-1)}
 print(order) """
 
-t = clean_rows(readers)
-cats = {k : 0 for k in categories.keys()}
+t = clean_rows(readers)#cleanup descriptions, extended desc is  not changed
+cats = {k : 0 for k in categories.keys()}#dictionary to hold category amounts
 
+#filters transactions based on category
 for trans in t:
-    a = get_amount_info(trans)
-    print(trans.cat)
+    a = filter_transaction(trans)
     cats[a[0]] += a[1]
-
-print(cats)
+    
+show_category('uncategorized', t)
 """
 print("Britt Pay: " + str(bPayAmt))
 print("Matt Pay: " + str(mPayAmt))
