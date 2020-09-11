@@ -145,8 +145,9 @@ csv_fields = {
 
 def filter_transaction(trans):
     
-    for key in categories:
-        if trans.desc.lower() in [x.lower() for x in categories[key]]:
+    for key in categories.keys():
+        a = [x.lower() for x in categories[key]]
+        if trans.desc.lower() in a:
             trans.cat = key
             break
         else:
