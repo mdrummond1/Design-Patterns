@@ -4,11 +4,11 @@ import time
 import functions
 import csv
 from winreg import QueryValueEx, OpenKey, HKEY_CURRENT_USER
-from os import listdir, remove
+from os import listdir, remove, path
 from os.path import isfile, join
 from transaction import Transaction
 from functions import *
-
+import json
 
 #===============Testing requests and beautiful soup==================
 """
@@ -62,19 +62,56 @@ mPayAmt = 0
 bPaycheck = []
 bPayAmt = 0
 ext = ".fin"
+
 #trying to get the list of transactions into a dictionary. Or we build an account object to track the balance over time and hold a list of transactions
 """ order = {f:readers[t] for f in get_account_order(ext) for t in range(row_to_remove[1]-1)}
 print(order) """
 
 t = clean_rows(readers)#cleanup descriptions, extended desc is  not changed
-cats = {k : 0 for k in categories.keys()}#dictionary to hold category amounts
+amounts = {k : 0 for k in categories.keys()}#dictionary to hold category amounts
+
+#read categories in a file
+if path.exists('cats.json') and path.getsize('cats.json') > 0:
+    fl= open('cats.json', 'r')
+    categories = json.load(fl)
+    fl.close()
+    remove('cats.json')
+
 
 #filters transactions based on category
-for trans in t:
-    a = filter_transaction(trans)
-    cats[a[0]] += a[1]
+uncategorized = filter_all_transactions(t)
+
+i = 1
+while len(uncategorized) > 0:
+
+    print(i-1)
+    uncategorized[i].display()
+    key = input('Enter category: ')
+    val = input('Enter transaction description: ')
     
+    if key != '' and val != '':
+        #update transaction and add to transaction list
+        update_category(key, val)
+    
+    for trans in uncategorized:
+        filter_transaction(trans)
+        if trans.desc != 'uncategorized':
+            t.append(trans)
+            uncategorized.remove(trans)
+
+    i = i + 1 % len(uncategorized)
+    print(len(uncategorized))
+    
+#amounts = trans.update_cat()
+#amounts[a[0]] += a[1]
+#write categories to a file
+""" fl = open('cats.json', 'w')
+json.dump(categories, fl)
+fl.close() """
+
 show_category('uncategorized', t)
+
+
 """
 print("Britt Pay: " + str(bPayAmt))
 print("Matt Pay: " + str(mPayAmt))

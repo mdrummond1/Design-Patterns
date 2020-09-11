@@ -143,28 +143,55 @@ csv_fields = {
     'ext_desc' : 12
 }
 
-def filter_transaction(t):
+def filter_transaction(trans):
+    
+    for key in categories:
+        if trans.desc.lower() in [x.lower() for x in categories[key]]:
+            trans.cat = key
+            break
+        else:
+            trans.cat = 'uncategorized'
+
+
+def filter_all_transactions(t):
     '''(t) -> [str, int]
     Accepts a Transaction as input and returns a list 
     showing which category the transaction belongs in
     and the amount of the transaction'''
-
-    for key in categories:#search categories for given transaction description
-        if t.desc in categories[key]:
-            arr = [key]
-            t.cat = key
-            break#leave loop if we find it
-        else:
-            arr = ['uncategorized']
-            t.cat = 'uncategorized'
+    uncat = []
+    for trans in t:
+        filter_transaction(trans)
+        if trans.cat == 'uncategorized':
+            uncat.append(trans)
+            t.remove(trans)
     
-    arr.append(float(t.amt))
-    return arr
+    return uncat
 
 def show_category(s, t):
     for trans in t:
         if trans.cat == s:
             trans.display()
+
+def update_cat():
+    print('Current categories:')
+    print("===================")
+    for cat in functions.categories.keys():
+        print(cat)
+    self.cat = input("Enter category: ")
+    if not self.cat in functions.categories:
+        functions.categories[self.cat] = [self.desc]
+    else:
+        functions.categories[self.cat].append(self.desc)
+       
+        amounts = {k : 0 for k in functions.categories.keys()}
+        return amounts
+
+def update_category(key, value):
+    if key not in categories.keys():
+        categories[key] = [value]
+    else:
+        categories[key].append(value)
+
 #Dictionary to check descriptions and categorize
 categories = {
     'income' : ['VIA CHRISTI', 'STATE OF KANSAS', 'APY Earned'],

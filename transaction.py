@@ -1,20 +1,6 @@
 import functions
 
 class Transaction:
-    def __init__(self, transID, post, effDate, transType, amt, check, ref, desc, cat, typ, bal, memo, ext):
-        self.transID = transID
-        self.post = post
-        self.effDate = effDate
-        self.transType = transType
-        self.amt = round(float(amt), 2)
-        self.check = check
-        self.ref = ref
-        self.desc = desc
-        self.cat = cat
-        self.type = typ
-        self.bal = bal
-        self.memo = memo
-        self.ext = ext
     
     def __init__(self, reader):
         self.transID = reader[functions.csv_fields['trans_id']]
@@ -33,6 +19,9 @@ class Transaction:
 
     def get_amt(self):
         return self.amt
+    
+    def set_cat(self, cat):
+        self.cat = cat
 
     def display(self):
         print('{0} {1} {2} {3} {4} {5} {6} {7}'.format(self.transID, self.post, self.effDate, self.transType, self.amt, self.ref, self.desc, self.cat))
