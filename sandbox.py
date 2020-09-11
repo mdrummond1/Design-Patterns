@@ -66,50 +66,55 @@ ext = ".fin"
 #trying to get the list of transactions into a dictionary. Or we build an account object to track the balance over time and hold a list of transactions
 """ order = {f:readers[t] for f in get_account_order(ext) for t in range(row_to_remove[1]-1)}
 print(order) """
+if path.exists('cats.json') and path.getsize('cats.json') > 0:
+    fl= open('cats.json', 'r')
+    functions.categories = json.load(fl)
+    fl.close()
+    remove('cats.json')
 
 t = clean_rows(readers)#cleanup descriptions, extended desc is  not changed
 amounts = {k : 0 for k in categories.keys()}#dictionary to hold category amounts
 
 #read categories in a file
-if path.exists('cats.json') and path.getsize('cats.json') > 0:
-    fl= open('cats.json', 'r')
-    categories = json.load(fl)
-    fl.close()
-    remove('cats.json')
 
 
 #filters transactions based on category
 uncategorized = filter_all_transactions(t)
 
-i = 1
+i = 0
 while len(uncategorized) > 0:
 
-    print(i-1)
     uncategorized[i].display()
+    print("len: " + str(len(uncategorized)))
+    print('i: ' + str(i))
+
     key = input('Enter category: ')
     val = input('Enter transaction description: ')
-    
+    uncategorized[i].set_desc(val)
+
     if key != '' and val != '':
         #update transaction and add to transaction list
         update_category(key, val)
     
     for trans in uncategorized:
         filter_transaction(trans)
-        if trans.desc != 'uncategorized':
+        if trans.cat != 'uncategorized':
             t.append(trans)
             uncategorized.remove(trans)
-
-    i = i + 1 % len(uncategorized)
-    print(len(uncategorized))
+    if len(uncategorized) == 0:
+        break
+    else:
+        i = (i + 1) % len(uncategorized)
     
+
 #amounts = trans.update_cat()
 #amounts[a[0]] += a[1]
 #write categories to a file
-""" fl = open('cats.json', 'w')
+fl = open('cats.json', 'w')
 json.dump(categories, fl)
-fl.close() """
+fl.close()
 
-show_category('uncategorized', t)
+#show_category('uncategorized', t)
 
 
 """
