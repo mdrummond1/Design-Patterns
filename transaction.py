@@ -23,6 +23,9 @@ class Transaction:
     def set_cat(self, cat):
         self.cat = cat
 
+    def set_desc(self, desc):
+        self.desc = desc
+
     def display(self):
         print('{0} {1} {2} {3} {4} {5} {6} {7}'.format(self.transID, self.post, self.effDate, self.transType, self.amt, self.ref, self.desc, self.cat))
         print('===================================================================================================')
