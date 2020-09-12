@@ -9,6 +9,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from winreg import QueryValueEx, OpenKey, HKEY_CURRENT_USER
 import getpass
 import transaction
+from json import dump, load
+from os.path import exists, getsize
 
 def get_date_parameters():
     '''get_date_parameters()-> dict
@@ -107,8 +109,8 @@ def clean_rows(readers):
                     break
         t.append(transaction.Transaction(row))
 
-    for trans in t:
-        if trans.type == 'Credit' and trans.amt > 0:
+    for trans in t:#
+        if trans.type == 'Debit' and trans.amt > 0:
             trans.amt = -trans.amt
     return t
     
@@ -144,7 +146,7 @@ csv_fields = {
 }
 
 def filter_transaction(trans):
-    
+    global categories
     for key in categories.keys():
         a = [x.lower() for x in categories[key]]
         if trans.desc.lower() in a:
@@ -173,7 +175,8 @@ def show_category(s, t):
         if trans.cat == s:
             trans.display()
 
-def update_cat():
+#Not used, but might be useful later
+""" def update_cat():
     print('Current categories:')
     print("===================")
     for cat in functions.categories.keys():
@@ -185,13 +188,16 @@ def update_cat():
         functions.categories[self.cat].append(self.desc)
        
         amounts = {k : 0 for k in functions.categories.keys()}
-        return amounts
+        return amounts """
 
 def update_category(key, value):
+    global categories
     if key not in categories.keys():
         categories[key] = [value]
     else:
-        categories[key].append(value)
+        #TODO: check to see if the value is already in the dictionary
+        if value not in categories[key]:#<- test this
+            categories[key].append(value)
 
 #Dictionary to check descriptions and categorize
 categories = {
@@ -207,7 +213,6 @@ categories = {
     'groceries' : ['Walmart', 'Aldi', 'Dillons', 'Dollar Tree'],
     'dining out' : ['Spangles', 'Braum\'s', 'Fazoli\'s', 'Saigon', 'Starbucks', 'Wichita Coffee'],
     'pets' : ['Sitstay'],
-    'healthcare' : ['grene vision'],
-    'uncategorized' : []
+    'healthcare' : ['grene vision']
 }
 
