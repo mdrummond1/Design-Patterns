@@ -1,4 +1,5 @@
 from functions import *
+import functions
 from selenium import common
 from csv import reader
 from os import listdir, remove
@@ -24,16 +25,17 @@ driver = webdriver.Chrome(PATH)
 driver.get(url)
 
 login(log_info[0], log_info[1] , driver)#login
-print("Logging in ...")
+print("Logging in...")
 i = 1#cause apparently I need a counter for the dropbox list
 
 #get list of accounts
+print("Collecting accounts...")
 accounts = WebDriverWait(driver, 5).until(lambda d: d.find_elements_by_class_name("account"))
 
 date_params = get_date_parameters()#generate dates
 print("Setting dates...")
 
-print("Collecting accounts...")
+print("Downloading transactions...")
 for account in accounts:#download csv for each account
     try:
         account.click()
@@ -81,22 +83,69 @@ readers = []
 
 #add in a list or something to keep track of the different accounts
 
-#open files and put in csv reader
+#open files and put into csv reader
 for file in csvs:
     fl = open(path_to_csvs + file)
     readers.extend(reader(fl))
     readers.remove(readers[row_to_remove])
     row_to_remove = len(readers)
     fl.close()
-    #remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
+    remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
 
  
 #clean the csv rows
 t = clean_rows(readers)
 
-for trans in t:
-    trans.display()
 
+#put in categorizing below here!
+#check for a categories file
+global categories
+if exists('cats.json') and getsize('cats.json') > 0:#if we have one, read the categories from it
+    with open('cats.json', 'r') as fl:    
+        categories = load(fl)
+        fl.close()
+        remove('cats.json')
 
-#TODO: what to do with transaction info
-    #separate into categories
+amounts = {k: 0 for k in categories.keys()}#setup a dictionary to hold the amounts in each category
+
+#filters transactions based on category
+uncategorized = filter_all_transactions(t)
+
+#while we have uncategorized transactions
+while len(uncategorized) > 0: 
+    uncategorized[0].display()
+
+    #for debugging
+    print(str(len(uncategorized)) + " uncategorized transactions remaining")
+
+    print("CURRENT CATEGORIES:===========")
+    for k in categories.keys():#show user the currennt categories
+        print(k)
+
+    #have user input category
+    key = input('Enter category: ')
+    val = input('Enter transaction description: ')
+
+    if key != '' and val != '':#if we got user input
+        #update transaction and add to transaction list
+        update_category(key, val)
+        uncategorized[0].set_desc(val)#update transactions description
+    
+    #then refilter the uncategorized transactions to remove all from the new category
+    for trans in uncategorized:
+        filter_transaction(trans)
+        #for any that have been updated
+        if trans.cat != 'uncategorized':
+            t.append(trans)#move them to the categorized
+            uncategorized.remove(trans)#remove from uncategorized
+    
+    #Shouldn't need this....
+    """ if len(uncategorized) == 0:#when they're all categorized exit
+        break """
+
+#update the cats json with the new categoriese
+fl = open('cats.json', 'w')
+dump(categories, fl)
+fl.close()
+
+#TODO: add up the transaction amounts for each transaction category
