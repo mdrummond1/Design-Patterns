@@ -104,14 +104,14 @@ def clean_rows(readers, cats):
     for row in readers:
         for cat in cats.values():
             for sub in cat:
-                if sub.lower() in row[csv_fields['desc']].lower():#clean the descriptions
+                if sub.lower() in row[csv_fields['desc']].lower() or sub.lower() in row[csv_fields['ext_desc']]:#clean the descriptions
                     row[csv_fields['desc']] = sub
                     break
         t.append(transaction.Transaction(row))
 
-    for trans in t:
+    """ for trans in t:
         if trans.type == 'Debit' and trans.amt > 0:
-            trans.amt = -trans.amt
+            trans.amt = -trans.amt """
     return t
     
 def get_account_order(ext):
@@ -149,7 +149,7 @@ def filter_transaction(trans, cat):
     for key in cat.keys():
         done = False
         for desc in [x.lower() for x in cat[key]]:
-            if desc.lower() in trans.desc.lower():
+            if desc.lower() in trans.desc.lower() or desc.lower() in trans.ext.lower():
                 trans.cat = key
                 done = True
                 break
