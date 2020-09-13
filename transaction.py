@@ -7,7 +7,7 @@ class Transaction:
         self.post = reader[functions.csv_fields['post']]
         self.effDate = reader[functions.csv_fields['effective']]
         self.transType = reader[functions.csv_fields['trans_type']]
-        self.amt = reader[functions.csv_fields['amt']]
+        self.amt = float(reader[functions.csv_fields['amt']])
         self.check = reader[functions.csv_fields['chk_num']]
         self.ref = reader[functions.csv_fields['ref_num']]
         self.desc = reader[functions.csv_fields['desc']]
@@ -29,7 +29,3 @@ class Transaction:
     def display(self):
         print('{0} {1} {2} {3} {4} {5} {6} {7}'.format(self.transID, self.post, self.effDate, self.transType, self.amt, self.ref, self.desc, self.cat))
         print('===================================================================================================')
-
-
-    def set_desc(self, newDesc):
-        self.desc = newDesc
