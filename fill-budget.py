@@ -74,6 +74,23 @@ driver.quit()
 #read-in files
 path_to_csvs = get_downloads()
 
+#Dictionary to check descriptions and categorize
+categories = {
+    'income' : ['VIA CHRISTI', 'STATE OF KANSAS', 'APY Earned'],
+    'rent' : ['CHECK'],
+    'phone' : ['ATT'],
+    'credit cards' : ['CAPITAL ONE', 'PAYMENT FOR AMZ', 'CHASE CREDIT CRD'],
+    'transportation' : ['PROG N WESTERN', 'QuikTrip'],
+    'renters insurance' : ['STATE FARM'],
+    'utilities' : ['COX', 'Evergy', 'KANSAS GAS', 'ATT', 'WASTELINK', 'CITY OF WICHITA'],
+    'loans' : ['GREAT LAKES'],
+    'gym' : ['YMCA'],
+    'groceries' : ['Walmart', 'Aldi', 'Dillons', 'Dollar Tree'],
+    'dining out' : ['Spangles', 'Braum\'s', 'Fazoli\'s', 'Saigon', 'Starbucks', 'Wichita Coffee'],
+    'pets' : ['Sitstay'],
+    'healthcare' : ['grene vision']
+}
+
 
 #build list of transaction files
 csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
@@ -94,12 +111,11 @@ for file in csvs:
 
  
 #clean the csv rows
-t = clean_rows(readers)
+t = clean_rows(readers, categories)
 
 
 #put in categorizing below here!
 #check for a categories file
-global categories
 if exists('cats.json') and getsize('cats.json') > 0:#if we have one, read the categories from it
     with open('cats.json', 'r') as fl:    
         categories = load(fl)
@@ -109,16 +125,17 @@ if exists('cats.json') and getsize('cats.json') > 0:#if we have one, read the ca
 amounts = {k: 0 for k in categories.keys()}#setup a dictionary to hold the amounts in each category
 
 #filters transactions based on category
-uncategorized = filter_all_transactions(t)
+uncategorized = filter_all_transactions(t, categories)
 
 #while we have uncategorized transactions
-while len(uncategorized) > 0: 
+while len(uncategorized) > 0:
     uncategorized[0].display()
 
-    #for debugging
+    
     print(str(len(uncategorized)) + " uncategorized transactions remaining")
 
-    print("CURRENT CATEGORIES:===========")
+    print("CURRENT CATEGORIES:")
+    print("================================")
     for k in categories.keys():#show user the currennt categories
         print(k)
 
@@ -128,17 +145,20 @@ while len(uncategorized) > 0:
 
     if key != '' and val != '':#if we got user input
         #update transaction and add to transaction list
-        update_category(key, val)
+        update_category(key, val, categories)
         uncategorized[0].set_desc(val)#update transactions description
     
     #then refilter the uncategorized transactions to remove all from the new category
-    for trans in uncategorized:
-        filter_transaction(trans)
+    i = 0
+    while i < len(uncategorized):
+        filter_transaction(uncategorized[i], categories)
         #for any that have been updated
-        if trans.cat != 'uncategorized':
-            t.append(trans)#move them to the categorized
-            uncategorized.remove(trans)#remove from uncategorized
-    
+        if uncategorized[i].cat != 'uncategorized':
+            t.append(uncategorized[i])#move them to the categorized
+            uncategorized.remove(uncategorized[i])#remove from uncategorized
+        else:
+            i += 1
+
     #Shouldn't need this....
     """ if len(uncategorized) == 0:#when they're all categorized exit
         break """
