@@ -1,5 +1,4 @@
 from functions import *
-import functions
 from selenium import common
 from csv import reader
 from os import listdir, remove
@@ -31,7 +30,7 @@ i = 1#cause apparently I need a counter for the dropbox list
 #get list of accounts
 print("Collecting accounts...")
 accounts = WebDriverWait(driver, 5).until(lambda d: d.find_elements_by_class_name("account"))
-
+#TODO: add in checking for bad credentials, shown from timeout error when getting accounts
 date_params = get_date_parameters()#generate dates
 print("Setting dates...")
 
@@ -122,7 +121,6 @@ if exists('cats.json') and getsize('cats.json') > 0:#if we have one, read the ca
         fl.close()
         remove('cats.json')
 
-amounts = {k: 0 for k in categories.keys()}#setup a dictionary to hold the amounts in each category
 
 #filters transactions based on category
 uncategorized = filter_all_transactions(t, categories)
@@ -142,6 +140,11 @@ while len(uncategorized) > 0:
     #have user input category
     key = input('Enter category: ')
     val = input('Enter transaction description: ')
+
+    while key == 'ext' or val == 'ext':
+        print(uncategorized[0].get_ext())
+        key = input('Enter category: ')
+        val = input('Enter transaction description: ')
 
     if key != '' and val != '':#if we got user input
         #update transaction and add to transaction list
@@ -163,9 +166,17 @@ while len(uncategorized) > 0:
     """ if len(uncategorized) == 0:#when they're all categorized exit
         break """
 
-#update the cats json with the new categoriese
+#update the cats json with new categoriese
 fl = open('cats.json', 'w')
 dump(categories, fl)
 fl.close()
 
+amounts = {k: 0 for k in categories.keys()}#setup a dictionary to hold the amounts in each category
+
+for trans in t:
+    for cat in amounts:
+        if trans.cat.lower() == cat:
+                amounts[cat] += trans.amt
+
+print(amounts)
 #TODO: add up the transaction amounts for each transaction category
