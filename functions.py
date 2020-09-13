@@ -94,7 +94,7 @@ def get_downloads():
     with OpenKey(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
         return QueryValueEx(key, '{374DE290-123F-4565-9164-39C4925E467B}')[0] + '\\'
 
-def clean_rows(readers):
+def clean_rows(readers, cats):
     '''(readers) -> [Transactions]
     Takes in a readers object (list of lists), and returns an array of Transactions
     Runs through 3 for loops
@@ -102,14 +102,14 @@ def clean_rows(readers):
     #TODO: Optimize this function to not use 3 for loopst
     t = []
     for row in readers:
-        for cat in categories.values():
+        for cat in cats.values():
             for sub in cat:
                 if sub.lower() in row[csv_fields['desc']].lower():#clean the descriptions
                     row[csv_fields['desc']] = sub
                     break
         t.append(transaction.Transaction(row))
 
-    for trans in t:#
+    for trans in t:
         if trans.type == 'Debit' and trans.amt > 0:
             trans.amt = -trans.amt
     return t
@@ -145,25 +145,27 @@ csv_fields = {
     'ext_desc' : 12
 }
 
-def filter_transaction(trans):
-    global categories
-    for key in categories.keys():
-        a = [x.lower() for x in categories[key]]
-        if trans.desc.lower() in a:
-            trans.cat = key
+def filter_transaction(trans, cat):
+    for key in cat.keys():
+        done = False
+        for desc in [x.lower() for x in cat[key]]:
+            if desc.lower() in trans.desc.lower():
+                trans.cat = key
+                done = True
+                break
+            else:
+                trans.cat = 'uncategorized'
+        if done:
             break
-        else:
-            trans.cat = 'uncategorized'
 
-
-def filter_all_transactions(t):
+def filter_all_transactions(t, cats):
     '''(t) -> [str, int]
     Accepts a Transaction as input and returns a list 
     showing which category the transaction belongs in
     and the amount of the transaction'''
     uncat = []
     for trans in t:
-        filter_transaction(trans)
+        filter_transaction(trans, cats)
         if trans.cat == 'uncategorized':
             uncat.append(trans)
             t.remove(trans)
@@ -171,9 +173,15 @@ def filter_all_transactions(t):
     return uncat
 
 def show_category(s, t):
+    
+    print("Showing all {0} transactions,".format(s))
+    print("==============================================================================")
+    
     for trans in t:
         if trans.cat == s:
             trans.display()
+    
+    print("==============================================================================")
 
 #Not used, but might be useful later
 """ def update_cat():
@@ -190,29 +198,12 @@ def show_category(s, t):
         amounts = {k : 0 for k in functions.categories.keys()}
         return amounts """
 
-def update_category(key, value):
-    global categories
-    if key not in categories.keys():
-        categories[key] = [value]
+def update_category(key, value, cats):
+    if key not in cats.keys():
+        cats[key] = [value]
     else:
         #TODO: check to see if the value is already in the dictionary
-        if value not in categories[key]:#<- test this
-            categories[key].append(value)
+        if value not in cats[key]:#<- test this
+            cats[key].append(value)
 
-#Dictionary to check descriptions and categorize
-categories = {
-    'income' : ['VIA CHRISTI', 'STATE OF KANSAS', 'APY Earned'],
-    'rent' : ['CHECK'],
-    'phone' : ['ATT'],
-    'credit cards' : ['CAPITAL ONE', 'PAYMENT FOR AMZ', 'CHASE CREDIT CRD'],
-    'transportation' : ['PROG N WESTERN', 'QuikTrip'],
-    'renters insurance' : ['STATE FARM'],
-    'utilities' : ['COX', 'Evergy', 'KANSAS GAS', 'ATT', 'WASTELINK', 'CITY OF WICHITA'],
-    'loans' : ['GREAT LAKES'],
-    'gym' : ['YMCA'],
-    'groceries' : ['Walmart', 'Aldi', 'Dillons', 'Dollar Tree'],
-    'dining out' : ['Spangles', 'Braum\'s', 'Fazoli\'s', 'Saigon', 'Starbucks', 'Wichita Coffee'],
-    'pets' : ['Sitstay'],
-    'healthcare' : ['grene vision']
-}
 
