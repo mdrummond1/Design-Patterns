@@ -138,6 +138,7 @@ while len(uncategorized) > 0:
         print(k)
 
     #have user input category
+    print("Enter 'ext' to see extended description")
     key = input('Enter category: ')
     val = input('Enter transaction description: ')
 
@@ -173,10 +174,15 @@ fl.close()
 
 amounts = {k: 0 for k in categories.keys()}#setup a dictionary to hold the amounts in each category
 
+#possible analysis of transactions here
+
+#add up the transaction amounts for each transaction category
 for trans in t:
     for cat in amounts:
         if trans.cat.lower() == cat:
                 amounts[cat] += trans.amt
 
 print(amounts)
-#TODO: add up the transaction amounts for each transaction category
+for cat in categories.keys():
+    show_by_category(cat, t)
+

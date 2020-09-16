@@ -27,9 +27,12 @@ def get_date_parameters():
     start_month = str(today.tm_mon - 1)
     start_yr = str(today.tm_year)
 
-    if start_month == 0:
+    wrapped = None
+    
+    if start_month == '0':
         start_month = '12'
         start_yr = str(today.tm_year - 1)
+        wrapped = True
 
     last_day = monthrange(int(start_yr), int(start_month))[1]
 
@@ -40,6 +43,9 @@ def get_date_parameters():
     end_day = start_day
     end_month = str(today.tm_mon)
     end_yr = start_yr
+
+    if wrapped:
+        end_yr = str(int(start_yr) + 1)
     
     start_date = "arguments[0].setAttribute('value', '" + start_month + '/' + start_day + '/' + start_yr + "')"
     end_date = "arguments[0].setAttribute('value', '" + end_month + '/' + end_day + '/' + end_yr + "')"
@@ -172,17 +178,27 @@ def filter_all_transactions(t, cats):
     
     return uncat
 
-def show_category(s, t):
+def show_by_category(s, t):
     
-    print("Showing all {0} transactions,".format(s))
+    print("Showing all {0} transactions".format(s))
     print("==============================================================================")
     
     for trans in t:
         if trans.cat == s:
             trans.display()
+
+    print("==============================================================================")
+
+
+def show_by_date(s, t):
+    print("showing all transactions from {0}".format(s))
+    for trans in t:
+        if trans.post == s:
+            trans.display()
     
     print("==============================================================================")
 
+#TODO: add in a function that will add up the amount using the given filter
 #Not used, but might be useful later
 """ def update_cat():
     print('Current categories:')
