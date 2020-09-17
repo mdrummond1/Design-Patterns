@@ -134,6 +134,9 @@ def get_account_order(ext):
     f.close()
     return a
 
+def save_categories(filename, cats):
+    with open(filename, 'w') as f:
+        dump(cats, f)
 #Dictionary to access correct column of transaction
 csv_fields = {
     'trans_id' : 0,

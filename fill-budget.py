@@ -168,9 +168,7 @@ while len(uncategorized) > 0:
         break """
 
 #update the cats json with new categoriese
-fl = open('cats.json', 'w')
-dump(categories, fl)
-fl.close()
+save_categories('cats.json', categories)
 
 amounts = {k: 0 for k in categories.keys()}#setup a dictionary to hold the amounts in each category
 
