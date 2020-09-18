@@ -75,38 +75,42 @@ path_to_csvs = get_downloads()
 
 #Dictionary to check descriptions and categorize
 categories = {
-    'income' : ['VIA CHRISTI', 'STATE OF KANSAS', 'APY Earned'],
-    'rent' : ['CHECK'],
-    'phone' : ['ATT'],
-    'credit cards' : ['CAPITAL ONE', 'PAYMENT FOR AMZ', 'CHASE CREDIT CRD'],
-    'transportation' : ['PROG N WESTERN', 'QuikTrip'],
-    'renters insurance' : ['STATE FARM'],
-    'utilities' : ['COX', 'Evergy', 'KANSAS GAS', 'ATT', 'WASTELINK', 'CITY OF WICHITA'],
-    'loans' : ['GREAT LAKES'],
-    'gym' : ['YMCA'],
-    'groceries' : ['Walmart', 'Aldi', 'Dillons', 'Dollar Tree'],
-    'dining out' : ['Spangles', 'Braum\'s', 'Fazoli\'s', 'Saigon', 'Starbucks', 'Wichita Coffee'],
-    'pets' : ['Sitstay'],
-    'healthcare' : ['grene vision']
+    'income' : ['my awsome job'],
+    'rent' : ['like my crib'],
+    'phone' : ['gunnacallul8r'],
+    'credit cards' : ['drowning in debt'],
+    'transportation' : ['am gon places'],
+    'utilities' : ['hangin at hom'],
+    'loans' : ['still drownin'],
+    'gym' : ['lazy'],
+    'groceries' : ['hungry'],
+    'dining out' : ['cant cook'],
+    'healthcare' : ['im dying']
 }
 
-
 #build list of transaction files
+#collects them in ascending order with ExportedTransactions at the end
 csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
 
+print(csvs)
 row_to_remove = 0#get rid of each file heading
 readers = []
 
 #add in a list or something to keep track of the different accounts
-
+balances = []
 #open files and put into csv reader
 for file in csvs:
     fl = open(path_to_csvs + file)
     readers.extend(reader(fl))
     readers.remove(readers[row_to_remove])
+    balances.append(readers[row_to_remove][csv_fields['balance']])#collect most recent balance from each account
     row_to_remove = len(readers)
     fl.close()
     remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
+
+#put the last balances at the front to get in correct account order
+balances.insert(0, balances.pop())
+print(balances)
 
  
 #clean the csv rows
@@ -180,7 +184,9 @@ for trans in t:
         if trans.cat.lower() == cat:
                 amounts[cat] += trans.amt
 
+#output categories and totals into excel
+
 print(amounts)
-for cat in categories.keys():
-    show_by_category(cat, t)
+""" for cat in categories.keys():
+    show_by_category(cat, t) """
 

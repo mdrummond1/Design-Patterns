@@ -120,18 +120,19 @@ def clean_rows(readers, cats):
             trans.amt = -trans.amt """
     return t
     
-def get_account_order(ext):
+def get_accounts():
     '''() -> void
     takes no parameters.
     opens a file containing the order of the account transactions
     and returns that order in a list.
     Now we can track where the transactions happened.'''
-    f = open("./order" + ext, 'r')
-    a = f.readlines()
-    for i in range(len(a)):
-        if a[i][-1] == '\n':#strip out the \n at the end
-            a[i] = a[i][:-1]
-    f.close()
+    with open("./accounts.fin", 'r') as f:
+        a = f.readlines()
+        for i in range(len(a)):
+            if a[i][-1] == '\n':#strip out the \n at the end
+                a[i] = a[i][:-1]
+        f.close()
+    
     return a
 
 def save_categories(filename, cats):
