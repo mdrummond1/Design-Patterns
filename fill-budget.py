@@ -184,7 +184,31 @@ for trans in t:
         if trans.cat.lower() == cat:
                 amounts[cat] += trans.amt
 
+
 #output categories and totals into excel
+"""to set up the next budget use percentages:
+    38% - housing
+    12% - food
+    5% - debts or savings
+    10% - insurance
+    5% Entertainment
+    5% Clothing
+    5% Savings
+    5% Miscellaneous
+
+    then compare that to the amounts from the previous month.
+    if last month was over in that category, the excess comes out of this month.
+    if last month was under in a category, we have more to spend this month.
+    Goal is to allocate 100% of income into a category, so we have 0 left over.
+
+Need to figure out how to store our data.
+This needs to be a separate file so it can be different for each user
+data needing stored:
+    1. categories
+    2. subcategories
+    3. account order
+    4. percentages?
+"""
 
 print(amounts)
 """ for cat in categories.keys():
