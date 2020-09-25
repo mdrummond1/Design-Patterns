@@ -76,11 +76,11 @@ path_to_csvs = get_downloads()
 #Dictionary to check descriptions and categorize
 categories = {
     'income' : ['my awsome job'],
-    'rent' : ['like my crib'],
-    'phone' : ['gunnacallul8r'],
+    'rent' : ['lik my crib'],
+    'phone' : ['gunna call u l8r'],
     'credit cards' : ['drowning in debt'],
     'transportation' : ['am gon places'],
-    'utilities' : ['hangin at hom'],
+    'utilities' : ['hang at hom'],
     'loans' : ['still drownin'],
     'gym' : ['lazy'],
     'groceries' : ['hungry'],
@@ -181,7 +181,7 @@ amounts = {k: 0 for k in categories.keys()}#setup a dictionary to hold the amoun
 #add up the transaction amounts for each transaction category
 for trans in t:
     for cat in amounts:
-        if trans.cat.lower() == cat:
+        if trans.cat.lower() == cat.lower():
                 amounts[cat] += trans.amt
 
 
@@ -195,6 +195,8 @@ for trans in t:
     5% Clothing
     5% Savings
     5% Miscellaneous
+    
+    stretch goals: make these percentages modifiable by user
 
     then compare that to the amounts from the previous month.
     if last month was over in that category, the excess comes out of this month.
