@@ -69,12 +69,11 @@ for account in accounts:#download csv for each account
 driver.quit()  
 
 
-#TODO: process csv's
 #read-in files
 path_to_csvs = get_downloads()
 
 #Dictionary to check descriptions and categorize
-categories = {
+configs = {
     'income' : ['my awsome job'],
     'rent' : ['lik my crib'],
     'phone' : ['gunna call u l8r'],
@@ -97,9 +96,11 @@ row_to_remove = 0#get rid of each file heading
 readers = []
 
 #add in a list or something to keep track of the different accounts
+#accounts stored in json
 balances = []
-#open files and put into csv reader
-for file in csvs:
+
+
+for file in csvs:#open files and put into csv reader
     fl = open(path_to_csvs + file)
     readers.extend(reader(fl))
     readers.remove(readers[row_to_remove])
@@ -108,26 +109,29 @@ for file in csvs:
     fl.close()
     remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
 
-#put the last balances at the front to get in correct account order
+
+#check for a categories file
+if exists('configs.json') and getsize('configs.json') > 0:#if we have one, read the categories from it
+    with open('configs.json', 'r') as fl:    
+        configs = load(fl)
+        fl.close()
+        remove('configs.json')
+
+#read the first file last, so put the last balance at the front to get in same order as bank
 balances.insert(0, balances.pop())
+balances = {key:amt
+            for key in configs['accounts']
+            for amt in balances
+        }#<- this isnt working quite right. Need to set account first, then put in balances
 print(balances)
 
- 
 #clean the csv rows
-t = clean_rows(readers, categories)
+t = clean_rows(readers, configs['subcategories'])
 
-
-#put in categorizing below here!
-#check for a categories file
-if exists('cats.json') and getsize('cats.json') > 0:#if we have one, read the categories from it
-    with open('cats.json', 'r') as fl:    
-        categories = load(fl)
-        fl.close()
-        remove('cats.json')
 
 
 #filters transactions based on category
-uncategorized = filter_all_transactions(t, categories)
+uncategorized = filter_all_transactions(t, configs['subcategories'])
 
 #while we have uncategorized transactions
 while len(uncategorized) > 0:
@@ -138,7 +142,7 @@ while len(uncategorized) > 0:
 
     print("CURRENT CATEGORIES:")
     print("================================")
-    for k in categories.keys():#show user the currennt categories
+    for k in configs['subcategories'].keys():#show user the current categories
         print(k)
 
     #have user input category
@@ -153,13 +157,13 @@ while len(uncategorized) > 0:
 
     if key != '' and val != '':#if we got user input
         #update transaction and add to transaction list
-        update_category(key, val, categories)
+        update_category(key, val, configs['subcategories'])
         uncategorized[0].set_desc(val)#update transactions description
     
     #then refilter the uncategorized transactions to remove all from the new category
     i = 0
     while i < len(uncategorized):
-        filter_transaction(uncategorized[i], categories)
+        filter_transaction(uncategorized[i], configs['subcategories'])
         #for any that have been updated
         if uncategorized[i].cat != 'uncategorized':
             t.append(uncategorized[i])#move them to the categorized
@@ -172,9 +176,9 @@ while len(uncategorized) > 0:
         break """
 
 #update the cats json with new categoriese
-save_categories('cats.json', categories)
+save_configs('configs.json', configs)
 
-amounts = {k: 0 for k in categories.keys()}#setup a dictionary to hold the amounts in each category
+amounts = {k: 0 for k in configs['subcategories'].keys()}#setup a dictionary to hold the amounts in each category
 
 #possible analysis of transactions here
 
