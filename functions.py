@@ -219,12 +219,14 @@ def show_by_date(s, t):
         amounts = {k : 0 for k in functions.categories.keys()}
         return amounts """
 
-def update_category(key, value, cats):
-    if key not in cats.keys():
-        cats[key] = [value]
+def update_category(new_cat, new_sub_cat, new_desc, sub_cats, cats):
+    if new_cat not in cats.keys():
+        cats[new_cat] = [new_sub_cat]
+        sub_cats[new_sub_cat] = new_desc
     else:
-        #TODO: check to see if the value is already in the dictionary
-        if value not in cats[key]:#<- test this
-            cats[key].append(value)
+        for cat in cats.keys():
+            if new_sub_cat not in cat:
+                cats[cat].append(new_sub_cat)
+                sub_cats[cat].append(new_desc)
 
 
