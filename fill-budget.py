@@ -91,20 +91,19 @@ configs = {
 #collects them in ascending order with ExportedTransactions at the end
 csvs = [f for f in listdir(path_to_csvs) if isfile(join(path_to_csvs, f)) and 'ExportedTransactions' in f]
 
-print(csvs)
 row_to_remove = 0#get rid of each file heading
 readers = []
 
 #add in a list or something to keep track of the different accounts
 #accounts stored in json
-balances = []
+amounts = []
 
 
 for file in csvs:#open files and put into csv reader
     fl = open(path_to_csvs + file)
     readers.extend(reader(fl))
     readers.remove(readers[row_to_remove])
-    balances.append(readers[row_to_remove][csv_fields['balance']])#collect most recent balance from each account
+    amounts.append(readers[row_to_remove][csv_fields['balance']])#collect most recent balance from each account
     row_to_remove = len(readers)
     fl.close()
     remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
@@ -118,11 +117,14 @@ if exists('configs.json') and getsize('configs.json') > 0:#if we have one, read 
         remove('configs.json')
 
 #read the first file last, so put the last balance at the front to get in same order as bank
-balances.insert(0, balances.pop())
-balances = {key:amt
-            for key in configs['accounts']
-            for amt in balances
-        }#<- this isnt working quite right. Need to set account first, then put in balances
+amounts.insert(0, amounts.pop())
+
+balances = {key:0 for key in configs['accounts']}
+i = 0
+for acct in balances.keys():
+    balances[acct] = amounts[i]
+    i += 1
+
 print(balances)
 
 #clean the csv rows
@@ -140,25 +142,34 @@ while len(uncategorized) > 0:
     
     print(str(len(uncategorized)) + " uncategorized transactions remaining")
 
+    #have user input category
+    print("Enter 'ext' to see extended description")
+    new_cat = input('Enter category: ')
+    
     print("CURRENT CATEGORIES:")
     print("================================")
     for k in configs['subcategories'].keys():#show user the current categories
         print(k)
 
-    #have user input category
-    print("Enter 'ext' to see extended description")
-    key = input('Enter category: ')
-    val = input('Enter transaction description: ')
+    new_sub_cat = input('Enter subcategory: ')
+    print("CURRENT SUBCATEGORIES:")
+    print("================================")
+    
+    for k in configs['subcategories'].keys():#show user the current categories
+        print(k)
+    
+    new_desc = input('Enter transaction description: ')
 
-    while key == 'ext' or val == 'ext':
+    while new_cat == 'ext' or new_sub_cat == 'ext' or new_desc == 'ext':
         print(uncategorized[0].get_ext())
-        key = input('Enter category: ')
-        val = input('Enter transaction description: ')
+        new_cat = input('Enter category: ')
+        new_sub_cat = input('Enter subcategory: ')
+        new_desc = input('Enter transaction description: ')
 
-    if key != '' and val != '':#if we got user input
+    if new_cat != '' and new_sub_cat != '' and new_desc != '':#if we got user input
         #update transaction and add to transaction list
-        update_category(key, val, configs['subcategories'])
-        uncategorized[0].set_desc(val)#update transactions description
+        update_category(new_cat, new_sub_cat, new_desc,configs['subcategories'], configs['categories'])
+        uncategorized[0].set_desc(new_desc)#update transactions description
     
     #then refilter the uncategorized transactions to remove all from the new category
     i = 0
