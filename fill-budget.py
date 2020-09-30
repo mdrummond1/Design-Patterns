@@ -1,4 +1,5 @@
 from functions import *
+import pandas as pd
 from selenium import common
 from csv import reader
 from os import listdir, remove
@@ -115,6 +116,15 @@ if exists('configs.json') and getsize('configs.json') > 0:#if we have one, read 
         configs = load(fl)
         fl.close()
         remove('configs.json')
+        haveFile = True
+else:
+    configs = {
+        "accounts" : [],
+        "categories" : [],
+        "subcategories" : []
+    }
+    haveFile = False
+
 
 #read the first file last, so put the last balance at the front to get in same order as bank
 amounts.insert(0, amounts.pop())
@@ -127,10 +137,9 @@ for acct in balances.keys():
 
 print(balances)
 
-#clean the csv rows
-t = clean_rows(readers, configs['subcategories'])
-
-
+#clean the csv rows if we had a file
+if haveFile:
+    t = clean_rows(readers, configs['subcategories'])
 
 #filters transactions based on category
 uncategorized = filter_all_transactions(t, configs['subcategories'])
@@ -139,24 +148,25 @@ uncategorized = filter_all_transactions(t, configs['subcategories'])
 while len(uncategorized) > 0:
     uncategorized[0].display()
 
-    
     print(str(len(uncategorized)) + " uncategorized transactions remaining")
 
     #have user input category
-    print("Enter 'ext' to see extended description")
-    new_cat = input('Enter category: ')
-    
     print("CURRENT CATEGORIES:")
     print("================================")
-    for k in configs['subcategories'].keys():#show user the current categories
+    for k in configs['categories'].keys():#show user the current categories
         print(k)
+    
+    print("Enter 'ext' to see extended description")
+    new_cat = input('Enter category: ')
 
-    new_sub_cat = input('Enter subcategory: ')
     print("CURRENT SUBCATEGORIES:")
     print("================================")
     
     for k in configs['subcategories'].keys():#show user the current categories
         print(k)
+    
+    
+    new_sub_cat = input('Enter subcategory: ')
     
     new_desc = input('Enter transaction description: ')
 
@@ -182,10 +192,6 @@ while len(uncategorized) > 0:
         else:
             i += 1
 
-    #Shouldn't need this....
-    """ if len(uncategorized) == 0:#when they're all categorized exit
-        break """
-
 #update the cats json with new categoriese
 save_configs('configs.json', configs)
 
@@ -199,6 +205,11 @@ for trans in t:
         if trans.cat.lower() == cat.lower():
                 amounts[cat] += trans.amt
 
+print(amounts)
+
+p = pd.DataFrame.from_dict(data=amounts, orient='index')
+
+p.to_excel('test.xlsx')
 
 #output categories and totals into excel
 """to set up the next budget use percentages:
@@ -227,7 +238,6 @@ data needing stored:
     4. percentages?
 """
 
-print(amounts)
 """ for cat in categories.keys():
     show_by_category(cat, t) """
 
