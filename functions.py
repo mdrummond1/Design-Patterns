@@ -57,6 +57,10 @@ def get_date_parameters():
     return date
 
 def get_log_info():
+    '''() -> void
+    collect username and password
+    '''
+
     log = []
     log.append(input("Enter User Name: "))
     log.append(getpass.getpass("Enter password: "))
@@ -136,6 +140,9 @@ def get_accounts():
     return a
 
 def save_configs(filename, cats):
+    """(filename, cats) -> void
+    saves categories into a json with the name filename
+    """
     with open(filename, 'w') as f:
         dump(cats, f, indent=4)#use indent to pretty print
 
@@ -157,6 +164,13 @@ csv_fields = {
 }
 
 def filter_transaction(trans, cat):
+    """(trans, cat) -> void
+    Searches through cats dictionary 
+    for the description in trans.
+    replaces the category with the one 
+    that was found in cat from the 
+    transactions description"""
+
     for key in cat.keys():
         done = False
         for desc in [x.lower() for x in cat[key]]:
@@ -170,7 +184,7 @@ def filter_transaction(trans, cat):
             break
 
 def filter_all_transactions(t, cats):
-    '''(t) -> [str, int]
+    '''(t, cats) -> [str, int]
     Accepts a Transaction as input and returns a list 
     showing which category the transaction belongs in
     and the amount of the transaction'''
@@ -184,6 +198,9 @@ def filter_all_transactions(t, cats):
     return uncat
 
 def show_by_category(s, t):
+    '''(s, t) -> void
+    prints all transactions in t with the category s
+    '''
     
     print("Showing all {0} transactions".format(s))
     print("==============================================================================")
@@ -196,6 +213,10 @@ def show_by_category(s, t):
 
 
 def show_by_date(s, t):
+    '''(s, t) -> void
+    prints all transactions in t with post date of s
+    '''
+    
     print("showing all transactions from {0}".format(s))
     for trans in t:
         if trans.post == s:
@@ -203,30 +224,21 @@ def show_by_date(s, t):
     
     print("==============================================================================")
 
-#TODO: add in a function that will add up the amount using the given filter
-#Not used, but might be useful later
-""" def update_cat():
-    print('Current categories:')
-    print("===================")
-    for cat in functions.categories.keys():
-        print(cat)
-    self.cat = input("Enter category: ")
-    if not self.cat in functions.categories:
-        functions.categories[self.cat] = [self.desc]
-    else:
-        functions.categories[self.cat].append(self.desc)
-       
-        amounts = {k : 0 for k in functions.categories.keys()}
-        return amounts """
 
 def update_category(new_cat, new_sub_cat, new_desc, sub_cats, cats):
+    '''(new_cat, new_sub_cat, new_desc, sub_cats, cats) -> void
+    checks cats for new_cat key, and adds it if not found.
+    If it is found check sub_cats for new_sub_cat.
+    If new_sub_cat is not found in sub_cats, then add it
+    '''
     if new_cat not in cats.keys():
         cats[new_cat] = [new_sub_cat]
-        sub_cats[new_sub_cat] = new_desc
+        sub_cats[new_sub_cat] = [new_desc]
     else:
-        for cat in cats.keys():
-            if new_sub_cat not in cat:
-                cats[cat].append(new_sub_cat)
-                sub_cats[cat].append(new_desc)
+        for sub in sub_cats.keys():
+            if new_sub_cat not in sub:
+                sub_cats[new_sub_cat] = [new_desc]
+            else:
+                sub_cats[new_sub_cat].append(new_desc)
 
-
+#TODO: add in a function that will add up the amount using the given filter
