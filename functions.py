@@ -109,7 +109,8 @@ def clean_rows(readers, cats):
     Takes in a readers object (list of lists), and returns an array of Transactions
     Runs through 3 for loops
     '''
-    #TODO: Optimize this function to not use 3 for loopst
+    #TODO: Optimize this function to not use 3 for loops
+    done = False
     t = []
     for row in readers:
         for cat in cats.values():
@@ -117,11 +118,15 @@ def clean_rows(readers, cats):
                 if sub.lower() in row[csv_fields['desc']].lower() or sub.lower() in row[csv_fields['ext_desc']]:#clean the descriptions
                     row[csv_fields['desc']] = sub
                     break
+                    done = True
+            if done:
+                break
+        if done:
+            break
+                    
         t.append(transaction.Transaction(row))
 
-    """ for trans in t:
-        if trans.type == 'Debit' and trans.amt > 0:
-            trans.amt = -trans.amt """
+    
     return t
     
 def get_accounts():
@@ -144,7 +149,7 @@ def save_configs(filename, cats):
     saves categories into a json with the name filename
     """
     with open(filename, 'w') as f:
-        dump(cats, f, indent=4)#use indent to pretty print
+        dump(cats, f, indent=4, sort_keys=True)#use indent to pretty print
 
 #Dictionary to access correct column of transaction
 csv_fields = {
@@ -170,7 +175,6 @@ def filter_transaction(trans, cat):
     replaces the category with the one 
     that was found in cat from the 
     transactions description"""
-
     for key in cat.keys():
         done = False
         for desc in [x.lower() for x in cat[key]]:
@@ -183,19 +187,25 @@ def filter_transaction(trans, cat):
         if done:
             break
 
-def filter_all_transactions(t, cats):
+def filter_all_transactions(t, cats, file):
     '''(t, cats) -> [str, int]
     Accepts a Transaction as input and returns a list 
     showing which category the transaction belongs in
     and the amount of the transaction'''
     uncat = []
+    if not file:#we're not going to sort at all
+        return uncat, t
+    
+    #otherwise try to put it into the right category
     for trans in t:
         filter_transaction(trans, cats)
         if trans.cat == 'uncategorized':
             uncat.append(trans)
-            t.remove(trans)
-    
-    return uncat
+
+    for trans in uncat:#remove all the uncategorized transactions from t
+        t.remove(trans)
+        
+    return t, uncat
 
 def show_by_category(s, t):
     '''(s, t) -> void
@@ -235,10 +245,9 @@ def update_category(new_cat, new_sub_cat, new_desc, sub_cats, cats):
         cats[new_cat] = [new_sub_cat]
         sub_cats[new_sub_cat] = [new_desc]
     else:
-        for sub in sub_cats.keys():
-            if new_sub_cat not in sub:
-                sub_cats[new_sub_cat] = [new_desc]
-            else:
-                sub_cats[new_sub_cat].append(new_desc)
+        if new_sub_cat not in sub_cats.keys():
+            sub_cats[new_sub_cat] = [new_desc]
+        else:
+            sub_cats[new_sub_cat].append(new_desc)
 
 #TODO: add in a function that will add up the amount using the given filter

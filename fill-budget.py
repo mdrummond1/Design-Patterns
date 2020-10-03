@@ -116,15 +116,19 @@ if exists('configs.json') and getsize('configs.json') > 0:#if we have one, read 
         configs = load(fl)
         fl.close()
         remove('configs.json')
-        haveFile = True
-else:
+else:#initialize empty dictionary
+    #TODO: fill up accounts here, so we can get the correct balances later, 
+    # and avoid index out of bounds
     configs = {
         "accounts" : [],
-        "categories" : [],
-        "subcategories" : []
+        "categories" : {},
+        "subcategories" : {}
     }
-    haveFile = False
 
+if not configs['categories'] or not configs['subcategories']:
+    haveFile = False
+else:
+    haveFile = True
 
 #read the first file last, so put the last balance at the front to get in same order as bank
 amounts.insert(0, amounts.pop())
@@ -132,17 +136,19 @@ amounts.insert(0, amounts.pop())
 balances = {key:0 for key in configs['accounts']}
 i = 0
 for acct in balances.keys():
+    if i > len(balances.keys()):#we'll have indexing issues
+        break
     balances[acct] = amounts[i]
     i += 1
 
 print(balances)
 
-#clean the csv rows if we had a file
-if haveFile:
-    t = clean_rows(readers, configs['subcategories'])
+#clean the csv rows
+t = clean_rows(readers, configs['subcategories'])
 
 #filters transactions based on category
-uncategorized = filter_all_transactions(t, configs['subcategories'])
+t, uncategorized = filter_all_transactions(t, configs['subcategories'], haveFile)
+
 
 #while we have uncategorized transactions
 while len(uncategorized) > 0:
@@ -223,6 +229,7 @@ p.to_excel('test.xlsx')
     5% Miscellaneous
     
     stretch goals: make these percentages modifiable by user
+        store in json?
 
     then compare that to the amounts from the previous month.
     if last month was over in that category, the excess comes out of this month.
