@@ -214,7 +214,7 @@ for trans in t:
 print(amounts)
 
 p = pd.DataFrame.from_dict(data=amounts, orient='index')
-
+print(p)
 p.to_excel('test.xlsx')
 
 #output categories and totals into excel
