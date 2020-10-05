@@ -2,6 +2,6 @@ __pycache__
 .vscode
 order.txt
 functions.pyc
-cats.json
 accounts.fin
 *.xlsx
+configs.json
