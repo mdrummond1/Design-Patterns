@@ -4,3 +4,4 @@ order.txt
 functions.pyc
 cats.json
 accounts.fin
+*.xlsx
