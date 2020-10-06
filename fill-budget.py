@@ -101,12 +101,17 @@ amounts = []
 
 
 for file in csvs:#open files and put into csv reader
-    fl = open(path_to_csvs + file)
-    readers.extend(reader(fl))
-    readers.remove(readers[row_to_remove])
-    amounts.append(readers[row_to_remove][csv_fields['balance']])#collect most recent balance from each account
-    row_to_remove = len(readers)
-    fl.close()
+    with open(path_to_csvs + file) as fl:
+        readers.extend(reader(fl))
+        readers.remove(readers[row_to_remove])
+        print("remove: " + str(row_to_remove))
+        print("len: " + str(len(readers)))
+        if (len(readers) - row_to_remove) > 1:#if we added new transactions, then get the balance
+            amounts.append(readers[row_to_remove][csv_fields['balance']])#collect most recent balance from each account
+        else:#otherwise the file was blank, set it to 0
+            amounts.append(0)
+        row_to_remove = len(readers)
+    
     remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
 
 
@@ -141,7 +146,15 @@ for acct in balances.keys():
     balances[acct] = amounts[i]
     i += 1
 
+for key in balances:#check if we have a positive credit card balance, and make it negative
+    #this may cause problems if the actual balance is positive, like when a statement has been accidentally overpaid
+    if key in configs["credit cards"] and balances[key] > 0:
+        balances[key] = -balances[key]
+
+
 print(balances)
+
+k = input("here we are")
 
 #clean the csv rows
 t = clean_rows(readers, configs['subcategories'])
