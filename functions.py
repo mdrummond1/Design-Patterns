@@ -93,8 +93,10 @@ def input_dates(date, driver):
     end date is todays date
     '''
     start = driver.find_element_by_id("Parameters_StartDate")
+    #start.text = date['start_date']
     driver.execute_script(date['start_date'], start)
     end = driver.find_element_by_id("Parameters_EndDate")
+    #end.value = date['end_dated']
     driver.execute_script(date['end_date'], end)
 
 def get_downloads():

@@ -15,7 +15,7 @@ from transaction import Transaction
 #TODO: Use cryptography to save username/password
 
 
-url = "https://cuaonline.cuofamerica.com/MyAccountsV2"
+""" url = "https://cuaonline.cuofamerica.com/MyAccountsV2"
 PATH = "./browserDrivers/chromedriver.exe"
 ext = '.fin'
 
@@ -26,29 +26,57 @@ driver.get(url)
 
 login(log_info[0], log_info[1] , driver)#login
 print("Logging in...")
-i = 1#cause apparently I need a counter for the dropbox list
+i = 0#cause apparently I need a counter for the dropbox list
 
 #get list of accounts
 print("Collecting accounts...")
 accounts = WebDriverWait(driver, 5).until(lambda d: d.find_elements_by_class_name("account"))
 #TODO: add in checking for bad credentials, shown from timeout error when getting accounts
+
 date_params = get_date_parameters()#generate dates
 print("Setting dates...")
 
 print("Downloading transactions...")
+try:
+    accounts[0].click()
+
+    wait_and_click('export_trigger', driver, 5)    
+
+    drop = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "iris-dropdown__selected-value")))
+    drop.click()#open dropbox
+
+    dropbox_items = WebDriverWait(driver, 5).until(lambda d: d.find_elements(By.CLASS_NAME,"iris-list-item__content"))
+    dropbox_items[i].click()#select csv
+
+    input_dates(date_params, driver)#put date values into date selectors
+
+    download = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "export_transactions_confirm_button")))
+
+    download.click()
+    #confirm_btn = wait_and_click("export_transactions_confirm_button", driver, 5)
+        
+    time.sleep(2)#give the file time to download
+
+except Exception as e:
+    print("something failed")
+
+#website was updated
+
 for account in accounts:#download csv for each account
     try:
         account.click()
     
         #print(account.get_attribute('data-account-identifier'))#maybe I can use this to get the date directly?
-    
+
         wait_and_click('export_trigger', driver, 5)    
 
         drop = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "x-form-text")))
         drop.click()#open dropbox
-    
+
         dropbox_items = WebDriverWait(driver, 5).until(lambda d: d.find_elements(By.CLASS_NAME,"x-combo-list-item"))
         dropbox_items[i].click()#select csv
+
+
         i = i + 5 #increment counter for dropbox
 
         input_dates(date_params, driver)#put date values into date selectors
@@ -66,9 +94,9 @@ for account in accounts:#download csv for each account
         print("you can't do that")
         print(e)
         
-
+ 
 driver.quit()  
-
+ """
 
 #read-in files
 path_to_csvs = get_downloads()
@@ -104,15 +132,13 @@ for file in csvs:#open files and put into csv reader
     with open(path_to_csvs + file) as fl:
         readers.extend(reader(fl))
         readers.remove(readers[row_to_remove])
-        print("remove: " + str(row_to_remove))
-        print("len: " + str(len(readers)))
         if (len(readers) - row_to_remove) > 1:#if we added new transactions, then get the balance
             amounts.append(readers[row_to_remove][csv_fields['balance']])#collect most recent balance from each account
         else:#otherwise the file was blank, set it to 0
             amounts.append(0)
         row_to_remove = len(readers)
     
-    remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
+    #remove(path_to_csvs + file)#delete file, so we don't have repeat transactions
 
 
 #check for a categories file
@@ -125,7 +151,15 @@ else:#initialize empty dictionary
     #TODO: fill up accounts here, so we can get the correct balances later, 
     # and avoid index out of bounds
     configs = {
-        "accounts" : [],
+        "accounts" : [
+            "CHECKING", 
+            "BALANCE BOOST",
+            "SAVINGS",
+            "Quicksilver credit card",
+            "360 Savings",
+            "Chase credit card",
+            "Amazon credit card"],
+        
         "categories" : {},
         "subcategories" : {}
     }
@@ -143,12 +177,13 @@ i = 0
 for acct in balances.keys():
     if i > len(balances.keys()):#we'll have indexing issues
         break
-    balances[acct] = amounts[i]
+    balances[acct] = float(amounts[i])
     i += 1
+
 
 for key in balances:#check if we have a positive credit card balance, and make it negative
     #this may cause problems if the actual balance is positive, like when a statement has been accidentally overpaid
-    if key in configs["credit cards"] and balances[key] > 0:
+    if "credit card" in key and balances[key] > 0:
         balances[key] = -balances[key]
 
 
