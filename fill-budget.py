@@ -189,8 +189,6 @@ for key in balances:#check if we have a positive credit card balance, and make i
 
 print(balances)
 
-k = input("here we are")
-
 #clean the csv rows
 t = clean_rows(readers, configs['subcategories'])
 
@@ -261,8 +259,10 @@ for trans in t:
 
 print(amounts)
 
-p = pd.DataFrame.from_dict(data=amounts, orient='index')
+p = pd.DataFrame.from_dict(data=amounts, orient='index', columns=["Projected", "Actual", "Difference"])
+p = p.round(2)
 print(p)
+print(len(p))
 p.to_excel('test.xlsx')
 
 #output categories and totals into excel
