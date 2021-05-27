@@ -220,3 +220,5 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+1. Creational/2. AbstractFactory/C#/obj/Debug/net5.0/FurnitureAbstractFactory.assets.cache
+1. Creational/2. AbstractFactory/C#/obj/Debug/net5.0/FurnitureAbstractFactory.csprojAssemblyReference.cache
