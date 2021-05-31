@@ -222,5 +222,3 @@ msbuild.wrn
 .vs/
 1. Creational/2. AbstractFactory/C#/obj/Debug/net5.0/FurnitureAbstractFactory.assets.cache
 1. Creational/2. AbstractFactory/C#/obj/Debug/net5.0/FurnitureAbstractFactory.csprojAssemblyReference.cache
-1. Creational/2. AbstractFactory/C#/obj/Debug/net5.0/FurnitureAbstractFactory.assets.cache
-.gitignore
